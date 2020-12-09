@@ -8,6 +8,7 @@
         android:title="@string/action_settings"
         android:visible="true" />
     <item
+        android:id="@+id/logOut"
         android:orderInCategory="101"
         android:title="Log Out" />
 </menu>
