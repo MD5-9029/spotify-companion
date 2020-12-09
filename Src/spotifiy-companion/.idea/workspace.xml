@@ -25,10 +25,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9673724e-0386-4fba-b11c-fb0df018f4d2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/java/com/example/spotify_companion/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../spotify-companion/app/src/main/java/com/example/spotify_companion/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/java/com/example/spotify_companion/FirstFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/java/com/example/spotify_companion/SecondFragment.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/values-night/themes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/layout/fragment_first.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spotify-companion/app/src/main/res/layout/fragment_second.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
