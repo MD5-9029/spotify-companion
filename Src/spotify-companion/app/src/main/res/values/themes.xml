@@ -13,6 +13,11 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
+        <!--
+        <item name="colorButtonNormal">@color/secondaryDarkColor</item>
+        <item name="cornerFamilyTopRight">cut</item>
+        -->
+
     </style>
 
     <style name="Theme.Spotifycompanion.NoActionBar">
