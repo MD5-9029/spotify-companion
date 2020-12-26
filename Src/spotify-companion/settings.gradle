@@ -1,4 +1,0 @@
-include ':spotify-auth'
-include ':spotify-app-remote'
-include ':app'
-rootProject.name = "spotify-companion"
