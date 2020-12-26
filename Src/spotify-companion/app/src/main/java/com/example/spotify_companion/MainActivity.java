@@ -13,7 +13,7 @@ import com.spotify.protocol.types.Track;
 public class MainActivity extends AppCompatActivity {
 
     private static final String CLIENT_ID = "4234dd4558284817abdb7c7ecc4d7df7";
-    private static final String REDIRECT_URI = "comexamplespotify_companion://callback";
+    private static final String REDIRECT_URI = "spotifyCompanion://authCall";
     private SpotifyAppRemote mSpotifyAppRemote;
 
     protected void onCreate(Bundle savedInstanceState) {
