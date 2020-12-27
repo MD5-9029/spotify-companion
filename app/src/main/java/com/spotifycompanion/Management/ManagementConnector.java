@@ -1,36 +1,26 @@
-package com.spotifycompanion;
+package com.spotifycompanion.Management;
 
-import android.os.Bundle;
 import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.Track;
+import com.spotifycompanion.Activities.MainActivity;
 
-public class MainActivity extends AppCompatActivity {
 
+public class ManagementConnector {
     private static final String CLIENT_ID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String REDIRECT_URI = "spotifyCompanion://authCall";
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+    public void connectRemote(MainActivity pActivity) {
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
                         .showAuthView(true)
                         .build();
 
-        SpotifyAppRemote.connect(this, connectionParams,
+        SpotifyAppRemote.connect(pActivity, connectionParams,
                 new Connector.ConnectionListener() {
 
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
@@ -50,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    public void disconnect() {
         SpotifyAppRemote.disconnect(mSpotifyAppRemote);
     }
 

@@ -4,22 +4,16 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1480</x>
+      <x>1610</x>
       <y>210</y>
-      <w>210</w>
+      <w>310</w>
       <h>190</h>
     </coordinates>
     <panel_attributes>RemoteHandler
 --
--id: Long
-_-ClassAttribute: Long_
---
-#Operation(i: int): int
-/+AbstractOperation()/
---
-Responsibilities
--- Resp1
-*-- Resp2*</panel_attributes>
+-CLIENT_ID: String
+-REDIRECT_URI: String
+-mSpotifyAppRemote: SpotifyAppRemote</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -43,7 +37,7 @@ bg=orange</panel_attributes>
       <w>730</w>
       <h>640</h>
     </coordinates>
-    <panel_attributes>Mangement
+    <panel_attributes>Management
 --
 bg=orange</panel_attributes>
     <additional_attributes/>
@@ -58,15 +52,7 @@ bg=orange</panel_attributes>
     </coordinates>
     <panel_attributes>DatabaseHandler
 --
--id: Long
-_-ClassAttribute: Long_
---
-#Operation(i: int): int
-/+AbstractOperation()/
---
-Responsibilities
--- Resp1
-*-- Resp2*</panel_attributes>
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -79,15 +65,7 @@ Responsibilities
     </coordinates>
     <panel_attributes>DataParser
 --
--id: Long
-_-ClassAttribute: Long_
---
-#Operation(i: int): int
-/+AbstractOperation()/
---
-Responsibilities
--- Resp1
-*-- Resp2*</panel_attributes>
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -106,7 +84,7 @@ Responsibilities
     <coordinates>
       <x>1230</x>
       <y>210</y>
-      <w>210</w>
+      <w>330</w>
       <h>190</h>
     </coordinates>
     <panel_attributes>ManagementConnector
