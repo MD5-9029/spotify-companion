@@ -11,9 +11,12 @@
     </coordinates>
     <panel_attributes>RemoteHandler
 --
--CLIENT_ID: String
--REDIRECT_URI: String
--mSpotifyAppRemote: SpotifyAppRemote</panel_attributes>
+-zClientID: String
+-zRedirectURI: String
+-zSpotifyAppRemote: SpotifyAppRemote
+--
++connect(pActivity: MainActivity): void
++disconnect(): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -93,7 +96,8 @@ bg=orange</panel_attributes>
 -zDatabaseHandler: DatabaseHandler
 -zDataParser: DataParser
 --
-#Operation(i: int): int</panel_attributes>
++connectRemote(pActivity: MainActivity): void
++disconnectRemot(): void</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

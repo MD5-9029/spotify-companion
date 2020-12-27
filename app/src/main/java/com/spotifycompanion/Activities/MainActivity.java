@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        zManagementConnector.disconnect();
+        zManagementConnector.disconnectRemote();
     }
 
 }
