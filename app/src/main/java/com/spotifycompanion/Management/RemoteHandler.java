@@ -35,7 +35,7 @@ public class RemoteHandler {
                         subscribeToTrack();
 
                         //for test, play a list
-                        playPlaylist();
+                        playCurrent();
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -51,10 +51,16 @@ public class RemoteHandler {
         SpotifyAppRemote.disconnect(zSpotifyAppRemote);
     }
 
+    public void subscribeToTrack() {
+        zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
+            zTrack = playerState.track;
+        });
+    }
+
     /**
      * perform test action to verify code integrity
      */
-    private void playPlaylist() {
+    public void playCurrent() {
         zSpotifyAppRemote.getPlayerApi().resume();
 
         /*
@@ -73,12 +79,6 @@ public class RemoteHandler {
                 });
 
          */
-    }
-
-    public void subscribeToTrack(){
-        zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
-            zTrack = playerState.track;
-        });
     }
 
     public void addCurrentToLibrary() {
