@@ -1,18 +1,38 @@
 package com.spotifycompanion.Management;
 
-import com.spotifycompanion.Activities.MainActivity;
+import android.content.Context;
 
+import androidx.annotation.Nullable;
+
+/**
+ * class containing and managing all components below view
+ */
 public class ManagementConnector {
+    private Context zContext;
+    private DatabaseHandler zDatabaseHandler;
     private RemoteHandler zRemote = new RemoteHandler();
-    private DatabaseHandler zDatabaseHandler = new DatabaseHandler();
     private DataParser zDataParser = new DataParser();
 
-    public void connectRemote(MainActivity pActivity) {
-        zRemote.connect(pActivity);
+    /**
+     * constructor for management
+     *
+     * @param pContext context from MainActivity
+     */
+    public ManagementConnector(@Nullable Context pContext) {
+        zContext = pContext;
+        zDatabaseHandler = new DatabaseHandler(pContext);
+    }
+
+    public void connectRemote() {
+        zRemote.connect(zContext);
     }
 
     public void disconnectRemote() {
         zRemote.disconnect();
+    }
+
+    public RemoteHandler getRemote() {
+        return zRemote;
     }
 
 }

@@ -1,47 +1,63 @@
 package com.spotifycompanion.Management;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.Track;
-import com.spotifycompanion.Activities.MainActivity;
 
+/**
+ * remote handler manages interaction (requests) with the main app
+ */
 public class RemoteHandler {
     private static final String zClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String zRedirectURI = "spotifyCompanion://authCall";
     private SpotifyAppRemote zSpotifyAppRemote;
 
-    public void connect(MainActivity pActivity) {
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build();
+    private Track zTrack;
 
-        SpotifyAppRemote.connect(pActivity, connectionParams,
+    /**
+     * connect app to local spotify instance
+     *
+     * @param pActivity context from MainActivity
+     */
+    public void connect(Context pActivity) {
+        ConnectionParams lConnectionParams = new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build();
+
+        SpotifyAppRemote.connect(pActivity, lConnectionParams,
                 new Connector.ConnectionListener() {
+                    public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
+                        zSpotifyAppRemote = pSpotifyAppRemote;
 
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        zSpotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity", "Connected! Yay!");
+                        //keep the zTrack attribute up2date
+                        subscribeToTrack();
 
-                        // Now you can start interacting with App Remote
-                        connected();
-
+                        //for test, play a list
+                        playPlaylist();
                     }
 
                     public void onFailure(Throwable throwable) {
                         Log.e("MyActivity", throwable.getMessage(), throwable);
-
-                        // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
     }
 
+    /**
+     * disconnect app from spotify instance
+     */
     public void disconnect() {
         SpotifyAppRemote.disconnect(zSpotifyAppRemote);
     }
 
-    private void connected() {
+    /**
+     * perform test action to verify code integrity
+     */
+    private void playPlaylist() {
+        zSpotifyAppRemote.getPlayerApi().resume();
+
+        /*
         // Play a playlist
         zSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
 
@@ -52,8 +68,25 @@ public class RemoteHandler {
                     final Track track = playerState.track;
                     if (track != null) {
                         Log.d("MainActivity", track.name + " by " + track.artist.name);
+
                     }
                 });
+
+         */
+    }
+
+    public void subscribeToTrack(){
+        zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
+            zTrack = playerState.track;
+        });
+    }
+
+    public void addCurrentToLibrary() {
+        zSpotifyAppRemote.getUserApi().addToLibrary(zTrack.uri);
+    }
+
+    public void removeCurrentFromLibrary() {
+        zSpotifyAppRemote.getUserApi().removeFromLibrary(zTrack.uri);
     }
 }
 
