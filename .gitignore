@@ -1,6 +1,7 @@
 *.iml
 .gradle
 .idea
+/android-auth-1.2.3
 /local.properties
 /.idea/caches
 /.idea/libraries

@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1269</x>
-      <y>243</y>
+      <x>1224</x>
+      <y>351</y>
       <w>279</w>
       <h>171</h>
     </coordinates>
@@ -26,8 +26,8 @@
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>45</x>
-      <y>153</y>
+      <x>0</x>
+      <y>261</y>
       <w>459</w>
       <h>585</h>
     </coordinates>
@@ -39,8 +39,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>900</x>
-      <y>153</y>
+      <x>855</x>
+      <y>261</y>
       <w>657</w>
       <h>576</h>
     </coordinates>
@@ -52,8 +52,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>927</x>
-      <y>504</y>
+      <x>1314</x>
+      <y>540</y>
       <w>189</w>
       <h>171</h>
     </coordinates>
@@ -65,8 +65,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1152</x>
-      <y>504</y>
+      <x>1098</x>
+      <y>540</y>
       <w>189</w>
       <h>171</h>
     </coordinates>
@@ -78,8 +78,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>81</x>
-      <y>234</y>
+      <x>36</x>
+      <y>342</y>
       <w>90</w>
       <h>27</h>
     </coordinates>
@@ -89,8 +89,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>927</x>
-      <y>243</y>
+      <x>882</x>
+      <y>351</y>
       <w>297</w>
       <h>171</h>
     </coordinates>
@@ -104,6 +104,19 @@ bg=orange</panel_attributes>
 +connectRemote(pActivity: MainActivity): void
 +disconnectRemot(): void
 +getRemote(): RemoteHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>882</x>
+      <y>540</y>
+      <w>189</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>RESTHandler
+--
+</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

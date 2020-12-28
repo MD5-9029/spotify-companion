@@ -12,6 +12,7 @@ public class ManagementConnector {
     private DatabaseHandler zDatabaseHandler;
     private RemoteHandler zRemote = new RemoteHandler();
     private DataParser zDataParser = new DataParser();
+    private RESTHandler zRESTHandler = new RESTHandler();
 
     /**
      * constructor for management
