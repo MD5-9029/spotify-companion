@@ -1,5 +1,6 @@
 package com.spotifycompanion.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,7 @@ import com.spotifycompanion.R;
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector zManagementConnector = new ManagementConnector(MainActivity.this);
 
-    Button btnBottomLeft, getBtnBottomRight;
+    Button btnBottomLeft, btnBottomRight, btnAuth;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void getAllByID() {
         btnBottomLeft = findViewById(R.id.btn_bottonLeft);
-        getBtnBottomRight = findViewById(R.id.btn_bottomRight);
+        btnBottomRight = findViewById(R.id.btn_bottomRight);
+        btnAuth = findViewById(R.id.btn_authActivity);
     }
 
     private void registerListeners() {
@@ -49,11 +51,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getBtnBottomRight.setOnClickListener(new View.OnClickListener() {
+        btnBottomRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 zManagementConnector.getRemote().removeCurrentFromLibrary();
             }
         });
+
+        btnAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAuthActivity();
+            }
+        });
     }
+
+    private void openAuthActivity(){
+        Intent intent = new Intent(MainActivity.this, TestActivity.class);
+        startActivity(intent);
+    }
+
 }
