@@ -28,8 +28,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class TestActivity extends AppCompatActivity {
-    public static final String CLIENT_ID = "089d841ccc194c10a77afad9e1c11d54";
-    public static final String REDIRECT_URI = "spotify-sdk://auth";
+    public static final String CLIENT_ID = "4234dd4558284817abdb7c7ecc4d7df7";
+    public static final String REDIRECT_URI = "spotifyCompanion://authCall";
     public static final int AUTH_TOKEN_REQUEST_CODE = 0x10;
     public static final int AUTH_CODE_REQUEST_CODE = 0x11;
 
