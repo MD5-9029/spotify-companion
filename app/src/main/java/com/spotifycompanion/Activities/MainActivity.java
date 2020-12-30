@@ -12,7 +12,7 @@ import com.spotifycompanion.R;
 
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector zManagementConnector = new ManagementConnector(MainActivity.this);
-    Button btnBottomLeft, btnBottomRight, btnAuth;
+    Button btnBottomLeft, btnBottomRight, btnAuth, btnBottomMiddle;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         btnBottomLeft = findViewById(R.id.btn_bottonLeft);
         btnBottomRight = findViewById(R.id.btn_bottomRight);
         btnAuth = findViewById(R.id.btn_authActivity);
+        btnBottomMiddle = findViewById(R.id.btn_bottomMiddle);
     }
 
     private void startRoutine() {
@@ -65,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openAuthActivity();
+            }
+        });
+
+        btnBottomMiddle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zManagementConnector.getRemote().resume();
             }
         });
     }

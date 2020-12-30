@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
@@ -23,23 +25,22 @@ public class RemoteHandler {
     private SpotifyAppRemote zSpotifyAppRemote;
     private PlayerState zPlayer;
 
-
     public RemoteHandler(Context pContext) {
         zContext = pContext;
     }
 
     /**
-     * connect linkes the companion to the official app via IPC
+     * connect; links the companion to the official app via IPC
      */
     public void connect() {
-        ConnectionParams lConnectionParams = new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build();
-
-        SpotifyAppRemote.connect(zContext, lConnectionParams,
+        SpotifyAppRemote.connect(this,
+                new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build(),
                 new Connector.ConnectionListener() {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
                         zSpotifyAppRemote = pSpotifyAppRemote;
                         subscribeToStates();
-                        zSpotifyAppRemote.getPlayerApi().resume();
+                        //zSpotifyAppRemote.getPlayerApi().resume();
+                        //resume();
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -57,6 +58,7 @@ public class RemoteHandler {
         zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
             zPlayer = playerState;
         });
+
     }
 
     public void resume() {
@@ -67,7 +69,6 @@ public class RemoteHandler {
             Toast.makeText(this.zContext, e.toString(), Toast.LENGTH_LONG).show();
 
         }
-
     }
 
     public void like() {
