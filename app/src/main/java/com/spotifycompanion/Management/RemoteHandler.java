@@ -33,7 +33,7 @@ public class RemoteHandler {
      * connect; links the companion to the official app via IPC
      */
     public void connect() {
-        SpotifyAppRemote.connect(this,
+        SpotifyAppRemote.connect(zContext,
                 new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build(),
                 new Connector.ConnectionListener() {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
