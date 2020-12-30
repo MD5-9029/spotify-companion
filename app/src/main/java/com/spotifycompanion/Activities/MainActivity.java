@@ -12,7 +12,6 @@ import com.spotifycompanion.R;
 
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector zManagementConnector = new ManagementConnector(MainActivity.this);
-
     Button btnBottomLeft, btnBottomRight, btnAuth;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         zManagementConnector.connectRemote();
+        startRoutine();
     }
 
     @Override
@@ -35,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
         zManagementConnector.disconnectRemote();
     }
 
-
     private void getAllByID() {
         btnBottomLeft = findViewById(R.id.btn_bottonLeft);
         btnBottomRight = findViewById(R.id.btn_bottomRight);
         btnAuth = findViewById(R.id.btn_authActivity);
+    }
+
+    private void startRoutine() {
+        zManagementConnector.getRemote().resume();
     }
 
     private void registerListeners() {
@@ -47,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
         btnBottomLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zManagementConnector.getRemote().addCurrentToLibrary();
+                zManagementConnector.getRemote().like();
             }
         });
 
         btnBottomRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zManagementConnector.getRemote().removeCurrentFromLibrary();
+                zManagementConnector.getRemote().unlike();
             }
         });
 
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void openAuthActivity(){
+    private void openAuthActivity() {
         Intent intent = new Intent(MainActivity.this, TestActivity.class);
         startActivity(intent);
     }

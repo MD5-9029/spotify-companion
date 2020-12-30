@@ -3,91 +3,81 @@ package com.spotifycompanion.Management;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
 
 /**
- * remote handler manages interaction (requests) with the main app
+ * remote handler manages interaction (requests) with the main app.
+ * relays requests to spotify
  */
 public class RemoteHandler {
     private static final String zClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String zRedirectURI = "spotifyCompanion://authCall";
-    private SpotifyAppRemote zSpotifyAppRemote;
 
-    private Track zTrack;
+    private Context zContext;
+    private SpotifyAppRemote zSpotifyAppRemote;
+    private PlayerState zPlayer;
+
+
+    public RemoteHandler(Context pContext) {
+        zContext = pContext;
+    }
 
     /**
-     * connect app to local spotify instance
-     *
-     * @param pActivity context from MainActivity
+     * connect linkes the companion to the official app via IPC
      */
-    public void connect(Context pActivity) {
+    public void connect() {
         ConnectionParams lConnectionParams = new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build();
 
-        SpotifyAppRemote.connect(pActivity, lConnectionParams,
+        SpotifyAppRemote.connect(zContext, lConnectionParams,
                 new Connector.ConnectionListener() {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
                         zSpotifyAppRemote = pSpotifyAppRemote;
-
-                        //keep the zTrack attribute up2date
-                        subscribeToTrack();
-
-                        //for test, play a list
-                        playCurrent();
+                        subscribeToStates();
+                        zSpotifyAppRemote.getPlayerApi().resume();
                     }
 
                     public void onFailure(Throwable throwable) {
-                        Log.e("MyActivity", throwable.getMessage(), throwable);
+                        //Toast.makeText(zContext, "MSG", Toast.LENGTH_LONG).show();
+                        Log.e("RemoteHandler", throwable.getMessage(), throwable);
                     }
                 });
     }
 
-    /**
-     * disconnect app from spotify instance
-     */
     public void disconnect() {
         SpotifyAppRemote.disconnect(zSpotifyAppRemote);
     }
 
-    public void subscribeToTrack() {
+    public void subscribeToStates() {
         zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
-            zTrack = playerState.track;
+            zPlayer = playerState;
         });
     }
 
-    /**
-     * perform test action to verify code integrity
-     */
-    public void playCurrent() {
-        zSpotifyAppRemote.getPlayerApi().resume();
+    public void resume() {
+        try {
+            zSpotifyAppRemote.getPlayerApi().resume();
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this.zContext, e.toString(), Toast.LENGTH_LONG).show();
 
-        /*
-        // Play a playlist
-        zSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+        }
 
-        // Subscribe to PlayerState
-        zSpotifyAppRemote.getPlayerApi()
-                .subscribeToPlayerState()
-                .setEventCallback(playerState -> {
-                    final Track track = playerState.track;
-                    if (track != null) {
-                        Log.d("MainActivity", track.name + " by " + track.artist.name);
-
-                    }
-                });
-
-         */
     }
 
-    public void addCurrentToLibrary() {
-        zSpotifyAppRemote.getUserApi().addToLibrary(zTrack.uri);
+    public void like() {
+        Track lTrack = zPlayer.track;
+        zSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
     }
 
-    public void removeCurrentFromLibrary() {
-        zSpotifyAppRemote.getUserApi().removeFromLibrary(zTrack.uri);
+    public void unlike() {
+        Track lTrack = zPlayer.track;
+        zSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
     }
 }
 

@@ -10,7 +10,8 @@ import androidx.annotation.Nullable;
 public class ManagementConnector {
     private Context zContext;
     private DatabaseHandler zDatabaseHandler;
-    private RemoteHandler zRemote = new RemoteHandler();
+    private RemoteHandler zRemote;
+    ;
     private DataParser zDataParser = new DataParser();
     private RESTHandler zRESTHandler = new RESTHandler();
 
@@ -22,10 +23,11 @@ public class ManagementConnector {
     public ManagementConnector(@Nullable Context pContext) {
         zContext = pContext;
         zDatabaseHandler = new DatabaseHandler(pContext);
+        zRemote = new RemoteHandler(pContext);
     }
 
     public void connectRemote() {
-        zRemote.connect(zContext);
+        zRemote.connect();
     }
 
     public void disconnectRemote() {
