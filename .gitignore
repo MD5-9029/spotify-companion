@@ -1,8 +1,6 @@
 *.iml
-.gradle
 .idea
 /android-auth-1.2.3
-/local.properties
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -11,7 +9,5 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
-/captures
 .externalNativeBuild
 .cxx
-local.properties
