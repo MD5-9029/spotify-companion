@@ -6,11 +6,11 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.spotifycompanion.Management.ManagementConnector;
+import com.spotifycompanion.Management.gManagementConnector;
 import com.spotifycompanion.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final ManagementConnector zManagementConnector = new ManagementConnector(MainActivity.this);
+    private final gManagementConnector zManagementConnector = new gManagementConnector(MainActivity.this);
     Button btnBottomLeft, btnBottomRight, btnAuth, btnBottomMiddle;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 zManagementConnector.getRemote().resume();
+            }
+        });
+
+        btnAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zManagementConnector.auth();
             }
         });
     }

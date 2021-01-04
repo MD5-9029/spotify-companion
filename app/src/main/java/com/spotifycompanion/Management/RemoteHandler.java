@@ -2,6 +2,7 @@ package com.spotifycompanion.Management;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,8 +24,8 @@ public class RemoteHandler {
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
 
-    public RemoteHandler(Activity pContext) {
-        gActivity = pContext;
+    public RemoteHandler(Activity pActivity) {
+        gActivity = pActivity;
     }
 
     /**
@@ -42,7 +43,6 @@ public class RemoteHandler {
                     }
 
                     public void onFailure(Throwable throwable) {
-                        //Toast.makeText(zContext, "MSG", Toast.LENGTH_LONG).show();
                         Log.e("RemoteHandler", throwable.getMessage(), throwable);
                     }
                 });
@@ -55,6 +55,7 @@ public class RemoteHandler {
     public void subscribeToStates() {
         gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
             gPlayer = playerState;
+            //Log.e("callback", "works");
         });
 
     }
@@ -63,9 +64,7 @@ public class RemoteHandler {
         try {
             gSpotifyAppRemote.getPlayerApi().resume();
         } catch (java.lang.Exception e) {
-            e.printStackTrace();
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
-
         }
     }
 

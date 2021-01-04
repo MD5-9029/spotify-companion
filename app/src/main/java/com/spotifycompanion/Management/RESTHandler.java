@@ -1,14 +1,24 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class RESTHandler {
 
@@ -26,6 +36,9 @@ public class RESTHandler {
 
     public RESTHandler(Activity pContext) {
         gActivity = pContext;
+        requestToken();
+        requestCode();
+
     }
 
     private Uri getRedirectUri() {
@@ -38,7 +51,6 @@ public class RESTHandler {
         }
     }
 
-
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
@@ -47,39 +59,23 @@ public class RESTHandler {
                 .build();
     }
 
+    public void requestToken() {
+        final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
+        AuthorizationClient.openLoginActivity(gActivity, AUTH_TOKEN_REQUEST_CODE, request);
+    }
 
-    public void onRequestCodeClicked() {
+    public void requestCode() {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.CODE);
         AuthorizationClient.openLoginActivity(gActivity, AUTH_CODE_REQUEST_CODE, request);
     }
 
-    public void onRequestTokenClicked() {
-        final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
-        AuthorizationClient.openLoginActivity(gActivity, AUTH_TOKEN_REQUEST_CODE, request);
-    }
 
     public void onClearCredentialsClicked() {
         AuthorizationClient.clearCookies(gActivity);
     }
 
 
-    //seems useful to keep and reform
-/*
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-
-        if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
-            mAccessToken = response.getAccessToken();
-            updateTokenView();
-        } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
-            mAccessCode = response.getCode();
-            updateCodeView();
-        }
-    }
-
-
-    public void onGetUserProfileClicked(View view) {
+    public void getUserProfile() {
         if (mAccessToken == null) {
             return;
         }
@@ -102,13 +98,23 @@ public class RESTHandler {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final JSONObject jsonObject = new JSONObject(response.body().string());
-                    //setResponse(jsonObject.toString(3));
                 } catch (JSONException e) {
                     //setResponse("Failed to parse data: " + e);
                 }
             }
         });
+        Log.e("callback", "works!!!!!!!!!!!!!");
     }
- */
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+
+        if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
+            mAccessToken = response.getAccessToken();
+
+        } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
+            mAccessCode = response.getCode();
+
+        }
+    }
 }

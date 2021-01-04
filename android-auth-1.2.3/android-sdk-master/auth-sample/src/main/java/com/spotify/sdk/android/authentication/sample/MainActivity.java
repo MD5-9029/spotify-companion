@@ -164,8 +164,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Uri getRedirectUri() {
         return new Uri.Builder()
-                .scheme(getString(R.string.com_spotify_sdk_redirect_scheme))
-                .authority(getString(R.string.com_spotify_sdk_redirect_host))
+                .scheme("spotify-sdk")
+                .authority("auth")
                 .build();
     }
 }
