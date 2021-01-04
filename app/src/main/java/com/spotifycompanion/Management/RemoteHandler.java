@@ -1,11 +1,9 @@
 package com.spotifycompanion.Management;
 
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
@@ -18,26 +16,26 @@ import com.spotify.protocol.types.Track;
  * relays requests to spotify
  */
 public class RemoteHandler {
-    private static final String zClientID = "4234dd4558284817abdb7c7ecc4d7df7";
-    private static final String zRedirectURI = "spotifyCompanion://authCall";
+    private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
+    private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-    private Context zContext;
-    private SpotifyAppRemote zSpotifyAppRemote;
-    private PlayerState zPlayer;
+    private Activity gActivity;
+    private SpotifyAppRemote gSpotifyAppRemote;
+    private PlayerState gPlayer;
 
-    public RemoteHandler(Context pContext) {
-        zContext = pContext;
+    public RemoteHandler(Activity pContext) {
+        gActivity = pContext;
     }
 
     /**
      * connect; links the companion to the official app via IPC
      */
     public void connect() {
-        SpotifyAppRemote.connect(zContext,
-                new ConnectionParams.Builder(zClientID).setRedirectUri(zRedirectURI).showAuthView(true).build(),
+        SpotifyAppRemote.connect(gActivity,
+                new ConnectionParams.Builder(gClientID).setRedirectUri(gRedirectURI).showAuthView(true).build(),
                 new Connector.ConnectionListener() {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
-                        zSpotifyAppRemote = pSpotifyAppRemote;
+                        gSpotifyAppRemote = pSpotifyAppRemote;
                         subscribeToStates();
                         //zSpotifyAppRemote.getPlayerApi().resume();
                         //resume();
@@ -51,34 +49,34 @@ public class RemoteHandler {
     }
 
     public void disconnect() {
-        SpotifyAppRemote.disconnect(zSpotifyAppRemote);
+        SpotifyAppRemote.disconnect(gSpotifyAppRemote);
     }
 
     public void subscribeToStates() {
-        zSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
-            zPlayer = playerState;
+        gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
+            gPlayer = playerState;
         });
 
     }
 
     public void resume() {
         try {
-            zSpotifyAppRemote.getPlayerApi().resume();
+            gSpotifyAppRemote.getPlayerApi().resume();
         } catch (java.lang.Exception e) {
             e.printStackTrace();
-            Toast.makeText(this.zContext, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
 
         }
     }
 
     public void like() {
-        Track lTrack = zPlayer.track;
-        zSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+        Track lTrack = gPlayer.track;
+        gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
     }
 
     public void unlike() {
-        Track lTrack = zPlayer.track;
-        zSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+        Track lTrack = gPlayer.track;
+        gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
     }
 }
 

@@ -7,10 +7,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static String zDatabase = "companion.db";
+    private static String gDatabase = "companion.db";
 
     public DatabaseHandler(@Nullable Context pContext) {
-        super(pContext, zDatabase, null, 1);
+        super(pContext, gDatabase, null, 1);
 
     }
 

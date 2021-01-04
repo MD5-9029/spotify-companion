@@ -25,14 +25,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        zManagementConnector.connectRemote();
-        startRoutine();
+        zManagementConnector.initialize();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        zManagementConnector.disconnectRemote();
+        zManagementConnector.close();
     }
 
     private void getAllByID() {
@@ -42,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
         btnBottomMiddle = findViewById(R.id.btn_bottomMiddle);
     }
 
-    private void startRoutine() {
-        zManagementConnector.getRemote().resume();
-    }
 
     private void registerListeners() {
 
