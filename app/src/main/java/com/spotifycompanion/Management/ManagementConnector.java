@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 /**
  * class containing and managing all components below view
  */
-public class gManagementConnector {
+public class ManagementConnector {
     private Activity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
@@ -19,20 +19,23 @@ public class gManagementConnector {
      *
      * @param pActivity context from MainActivity
      */
-    public gManagementConnector(@Nullable Activity pActivity) {
+    public ManagementConnector(@Nullable Activity pActivity) {
         gActivity = pActivity;
         gDatabaseHandler = new DatabaseHandler(pActivity);
         gRemote = new RemoteHandler(pActivity);
     }
 
+    //might get deleted
+    public RemoteHandler getRemote() {
+        return gRemote;
+    }
+
     public void initialize() {
         this.connectRemote();
-        this.auth();
     }
 
     public void close() {
         this.disconnectRemote();
-        this.deAuth();
     }
 
     public void connectRemote() {
@@ -41,19 +44,6 @@ public class gManagementConnector {
 
     public void disconnectRemote() {
         gRemote.disconnect();
-    }
-
-    public RemoteHandler getRemote() {
-        return gRemote;
-    }
-
-    public void auth() {
-        gRESTHandler = new RESTHandler(gActivity);
-        gRESTHandler.getUserProfile();
-    }
-
-    public void deAuth() {
-        gRESTHandler.cancelCall();
     }
 
 }

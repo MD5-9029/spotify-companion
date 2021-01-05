@@ -38,8 +38,6 @@ public class RemoteHandler {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
                         gSpotifyAppRemote = pSpotifyAppRemote;
                         subscribeToStates();
-                        //zSpotifyAppRemote.getPlayerApi().resume();
-                        //resume();
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -55,7 +53,6 @@ public class RemoteHandler {
     public void subscribeToStates() {
         gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
             gPlayer = playerState;
-            //Log.e("callback", "works");
         });
 
     }
