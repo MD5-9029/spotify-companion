@@ -8,8 +8,11 @@
     <string name="previous">Previous</string>
 
     <!-- app-content strings -->
-    <string name="test">test</string>
     <string name="drawerSettings">Settings</string>
+    <string name="mainResume">Resume</string>
+    <string name="mainAuth">Do Not Follow The White Rabbit</string>
+    <string name="mainDislike">Dislike</string>
+    <string name="mainLike">Like</string>
 
 
     <!-- testactivity -->

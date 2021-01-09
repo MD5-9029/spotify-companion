@@ -1,6 +1,5 @@
 package com.spotifycompanion.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -30,6 +30,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
     Button btnBottomLeft, btnBottomRight, btnAuth, btnBottomMiddle;
+    Toolbar tbTop;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
+        tbTop = findViewById(R.id.toolbar);
+        setSupportActionBar(tbTop);
+
         btnBottomLeft = findViewById(R.id.btn_bottonLeft);
         btnBottomRight = findViewById(R.id.btn_bottomRight);
         btnAuth = findViewById(R.id.btn_authActivity);
