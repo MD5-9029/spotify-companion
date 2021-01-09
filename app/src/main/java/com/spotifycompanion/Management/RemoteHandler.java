@@ -57,6 +57,7 @@ public class RemoteHandler {
 
     }
 
+
     public void resume() {
         try {
             gSpotifyAppRemote.getPlayerApi().resume();
