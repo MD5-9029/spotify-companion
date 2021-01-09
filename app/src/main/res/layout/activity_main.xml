@@ -9,9 +9,6 @@
     tools:context=".Activities.MainActivity"
     tools:openDrawer="left">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -86,10 +83,10 @@
             android:id="@+id/drawer_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:foregroundGravity="left"
+            android:layout_gravity="left"
             app:headerLayout="@layout/drawer_main"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
