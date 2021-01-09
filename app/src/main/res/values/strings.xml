@@ -7,10 +7,15 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <!-- app-content strings -->
+    <string name="test">test</string>
+    <string name="drawerSettings">Settings</string>
+
+
+    <!-- testactivity -->
     <string name="title_activity_test">TestActivity</string>
 
-
-    //auth
+    <!-- auth -->
     <string name="warning_need_token">You need to request an access token first</string>
     <string name="code">Code: %1$s</string>
     <string name="token">Access Token: %1$s</string>
