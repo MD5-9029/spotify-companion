@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
     Button btnBottomLeft, btnBottomRight, btnAuth, btnBottomMiddle;
     Toolbar tbTop;
+    DrawerLayout dlLeft;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +58,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
+
         tbTop = findViewById(R.id.toolbar);
         setSupportActionBar(tbTop);
+
+        dlLeft = findViewById(R.id.main_view);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, dlLeft, tbTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        dlLeft.addDrawerListener(toggle);
+        toggle.syncState();
+
 
         btnBottomLeft = findViewById(R.id.btn_bottonLeft);
         btnBottomRight = findViewById(R.id.btn_bottomRight);
         btnAuth = findViewById(R.id.btn_authActivity);
         btnBottomMiddle = findViewById(R.id.btn_bottomMiddle);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (dlLeft.isDrawerOpen(Gravity.LEFT)) {
+            dlLeft.closeDrawer(Gravity.LEFT);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
