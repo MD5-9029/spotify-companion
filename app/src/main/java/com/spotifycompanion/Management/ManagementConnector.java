@@ -1,6 +1,7 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 
@@ -13,6 +14,7 @@ public class ManagementConnector {
     private RemoteHandler gRemote;
     private DataParser gDataParser;
     private RESTHandler gRESTHandler;
+    private boolean authorized = false;
 
     /**
      * constructor for management
@@ -41,7 +43,7 @@ public class ManagementConnector {
         gRemote.disconnect();
     }
 
-    public void likeCurrentTrack() {
+    public void likeCurrentTrack(View view) {
         gRemote.like();
     }
 
@@ -53,12 +55,11 @@ public class ManagementConnector {
         gRemote.resume();
     }
 
-    private void addToSkipped(String pUri) {
-        gDatabaseHandler.addSkipped(pUri);
+    public void clearSkipped(){
+        gDatabaseHandler.removeAllSkipped();
     }
 
-    private int getSkipped(String pUri) {
-        return gDatabaseHandler.getSkipped(pUri);
+    public boolean isAuthorized() {
+        return authorized;
     }
-
 }
