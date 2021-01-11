@@ -1,6 +1,8 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -25,32 +27,43 @@ public class ManagementConnector {
         gRemote = new RemoteHandler(pActivity);
     }
 
-    public void likeCurrentTrack() {
-        gRemote.like();
-    }
-
-    public void unlikeCurrentTrack(){
-        gRemote.unlike();
-    }
-
-    public void resumePlayback(){
-        gRemote.resume();
-    }
-
     public void initialize() {
         this.connectRemote();
+
     }
 
     public void close() {
         this.disconnectRemote();
+
     }
 
     public void connectRemote() {
         gRemote.connect();
+
     }
 
     public void disconnectRemote() {
+
         gRemote.disconnect();
+    }
+
+    public void likeCurrentTrack() {
+        gRemote.like();
+    }
+
+    public void unlikeCurrentTrack() {
+        gRemote.unlike();
+    }
+
+    public void resumePlayback() {
+        gRemote.resume();
+        test();
+    }
+
+    //database test
+    public void test(){
+        gDatabaseHandler.addSkipped("test");
+        Integer lI = gDatabaseHandler.getSkipped("test");
     }
 
 }
