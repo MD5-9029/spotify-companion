@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 gManagementConnector.resumePlayback();
-
             }
         });
 
@@ -120,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
 
 
     private void rest() {

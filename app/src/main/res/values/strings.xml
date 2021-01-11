@@ -30,5 +30,7 @@
     <string name="btn_req_code">Request Code</string>
     <string name="btn_req_token">Request Token</string>
     <string name="btn_clear_credentials">Clear WebView Credentials</string>
+    <string name="drawer_removeLiked">Remove from liked</string>
+    <string name="drawer_removeList">Remove from list</string>
 
 </resources>
