@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getAllByID();
-        registerListeners();
     }
 
     @Override
@@ -58,21 +57,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
-
         tbTop = findViewById(R.id.toolbar);
-        setSupportActionBar(tbTop);
 
+        setSupportActionBar(tbTop);
         dlLeft = findViewById(R.id.main_view);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, dlLeft, tbTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         dlLeft.addDrawerListener(toggle);
         toggle.syncState();
-
-
-        btBottomLeft = findViewById(R.id.btn_bottonLeft);
-        btBottomRight = findViewById(R.id.btn_bottomRight);
-        btLogInOut = findViewById(R.id.btn_authActivity);
-        btBottomMiddle = findViewById(R.id.btn_bottomMiddle);
     }
 
 
@@ -85,48 +77,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void resume(View v) {
+        gManagementConnector.resumePlayback();
+    }
 
-    private void registerListeners() {
+    public void like(View view) {
+        gManagementConnector.likeCurrentTrack(view);
+    }
 
-        btBottomLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gManagementConnector.likeCurrentTrack();
-            }
-        });
+    public void unLike(View view) {
+        gManagementConnector.unlikeCurrentTrack();
+    }
 
-        btBottomRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gManagementConnector.unlikeCurrentTrack();
-
-            }
-        });
-
-
-        btBottomMiddle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gManagementConnector.resumePlayback();
-            }
-        });
-
-        btLogInOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestToken();
-                rest();
-            }
-        });
+    public void clearSkipped(View view) {
+        gManagementConnector.clearSkipped();
     }
 
 
+    public void rest(View view) {
+        Button lBt = findViewById(R.id.bt_logInOut);
+        if(gManagementConnector.isAuthorized()) {
+            cancelCall();
+            onClearCredentialsClicked();
 
+            lBt.setText(R.string.drawer_logIn);
+        }else{
+            getUserProfile();
 
-
-
-    private void rest() {
-        getUserProfile();
+            lBt.setText(R.string.drawer_logOut);
+        }
     }
 
 

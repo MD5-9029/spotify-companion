@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
+                android:onClick="like"
                 android:text="@string/main_like"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -41,29 +42,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:onClick="unLike"
                 android:text="@string/main_dislike"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-
-            <Button
-                android:id="@+id/btn_authActivity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="100dp"
-                android:text="@string/main_auth"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/btn_bottomMiddle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:onClick="resume"
                 android:text="@string/main_resume"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="220dp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_bottonLeft"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_launcher_background" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

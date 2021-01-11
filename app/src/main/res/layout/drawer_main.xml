@@ -37,7 +37,8 @@
         android:layout_marginTop="8dp"
         android:text="@string/drawer_removeLiked"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sp_srcList" />
+        app:layout_constraintTop_toBottomOf="@+id/sp_srcList"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
         android:id="@+id/sw_rmList"
@@ -47,7 +48,8 @@
         android:layout_marginTop="8dp"
         android:text="@string/drawer_removeList"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_rmLiked" />
+        app:layout_constraintTop_toBottomOf="@+id/sw_rmLiked"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Spinner
         android:id="@+id/sp_dstList"
@@ -66,7 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
-        android:text="LogIn"
+        android:onClick="rest"
+        android:text="@string/drawer_logIn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,7 +78,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Clear Skipped"
+        android:onClick="clearSkipped"
+        android:text="@string/drawer_clearSkipped"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_logInOut" />
 

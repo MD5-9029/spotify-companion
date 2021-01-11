@@ -29,5 +29,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_removeLiked">Remove from liked</string>
     <string name="drawer_removeList">Remove from list</string>
+    <string name="drawer_logIn">LogIn</string>
+    <string name="drawer_logOut">LogOut</string>
+    <string name="drawer_clearSkipped">Clear Skipped</string>
 
 </resources>
