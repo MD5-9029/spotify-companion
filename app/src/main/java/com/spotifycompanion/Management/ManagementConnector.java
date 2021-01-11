@@ -53,12 +53,4 @@ public class ManagementConnector {
         gRemote.resume();
     }
 
-    private void addToSkipped(String pUri) {
-        gDatabaseHandler.addSkipped(pUri);
-    }
-
-    private int getSkipped(String pUri) {
-        return gDatabaseHandler.getSkipped(pUri);
-    }
-
 }

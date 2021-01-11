@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase pDB) {
         String lCreateTableString = "CREATE TABLE skipped (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                ColumnURI +  " STRING NOT NULL)";
+                ColumnURI + " STRING NOT NULL)";
         pDB.execSQL(lCreateTableString);
     }
 
@@ -32,6 +32,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * @param pUri uri of the song to be added to database
+     */
     public void addSkipped(String pUri) {
         SQLiteDatabase lDb = this.getWritableDatabase();
         //String lQuery = "INSERT INTO " + gTable + " (uri) VALUES (" + pUri + ")";
@@ -43,12 +46,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Log.e("DH: test", "insert done");
         lDb.close();
-        }
+    }
 
+    /**
+     * @param pUri uri of the track you seek
+     * @return number of times skipped
+     */
     public int getSkipped(String pUri) {
         SQLiteDatabase lDb = this.getReadableDatabase();
         String lQuery = "SELECT COUNT(*) FROM " + gTable + " WHERE uri = \"" + pUri + "\";";
         Cursor lCursor = lDb.rawQuery(lQuery, null);
+        lDb.close();
 
         if (lCursor.moveToFirst()) {
             int lCount = lCursor.getInt(0);
@@ -62,25 +70,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * removes a single entry with matching uri
+     *
      * @param pUri uri entry to remove
      */
-    public void removeOneSkipped(String pUri){
-
+    public void removeOneSkipped(String pUri) {
+        SQLiteDatabase lDb = this.getReadableDatabase();
+        String lQuery = "DELETE FROM " + gTable + " WHERE id = (SELECT id FROM " + gTable + " WHERE uri = \"" + pUri + "\" LIMIT 1);";
+        lDb.execSQL(lQuery);
+        lDb.close();
     }
 
     /**
      * removes all entries with matching uri
+     *
      * @param pUri uri entries to remove
      */
 
-    public void removeAllSkipped(String pUri){
-
+    public void removeAllSkipped(String pUri) {
+        SQLiteDatabase lDb = this.getReadableDatabase();
+        String lQuery = "DELETE FROM " + gTable + " WHERE uri = \"" + pUri + "\";";
+        lDb.execSQL(lQuery);
+        lDb.close();
     }
 
     /**
      * empties entire database
      */
-    public void removeAllSkipped(){
+    public void removeAllSkipped() {
+        SQLiteDatabase lDb = this.getReadableDatabase();
+        String lQuery = "DELETE FROM " + gTable + ";";
+        lDb.execSQL(lQuery);
+        lDb.close();
 
     }
 
