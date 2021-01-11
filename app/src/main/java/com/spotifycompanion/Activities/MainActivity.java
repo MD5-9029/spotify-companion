@@ -32,7 +32,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
-    Button btnBottomLeft, btnBottomRight, btnAuth, btnBottomMiddle;
+    Button btBottomLeft, btBottomRight, btLogInOut, btBottomMiddle;
     Toolbar tbTop;
     DrawerLayout dlLeft;
 
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-        btnBottomLeft = findViewById(R.id.btn_bottonLeft);
-        btnBottomRight = findViewById(R.id.btn_bottomRight);
-        btnAuth = findViewById(R.id.btn_authActivity);
-        btnBottomMiddle = findViewById(R.id.btn_bottomMiddle);
+        btBottomLeft = findViewById(R.id.btn_bottonLeft);
+        btBottomRight = findViewById(R.id.btn_bottomRight);
+        btLogInOut = findViewById(R.id.btn_authActivity);
+        btBottomMiddle = findViewById(R.id.btn_bottomMiddle);
     }
 
 
@@ -88,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void registerListeners() {
 
-        btnBottomLeft.setOnClickListener(new View.OnClickListener() {
+        btBottomLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gManagementConnector.likeCurrentTrack();
             }
         });
 
-        btnBottomRight.setOnClickListener(new View.OnClickListener() {
+        btBottomRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gManagementConnector.unlikeCurrentTrack();
@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        btnBottomMiddle.setOnClickListener(new View.OnClickListener() {
+        btBottomMiddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gManagementConnector.resumePlayback();
             }
         });
 
-        btnAuth.setOnClickListener(new View.OnClickListener() {
+        btLogInOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestToken();

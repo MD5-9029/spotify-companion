@@ -1,35 +1,32 @@
 <resources>
     <string name="app_name">SpotifyCompanion</string>
     <string name="title_activity_auth">AuthActivity</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <!-- app-content strings -->
-    <string name="drawerSettings">Settings</string>
-    <string name="mainResume">Resume</string>
-    <string name="mainAuth">Do Not Follow The White Rabbit</string>
-    <string name="mainDislike">Dislike</string>
-    <string name="mainLike">Like</string>
-
-
-    <!-- drawer -->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <!-- testactivity -->
-    <string name="title_activity_test">TestActivity</string>
-
     <!-- auth -->
     <string name="warning_need_token">You need to request an access token first</string>
     <string name="code">Code: %1$s</string>
     <string name="token">Access Token: %1$s</string>
-    <string name="btn_get_profile">Get User Profile</string>
-    <string name="btn_req_code">Request Code</string>
-    <string name="btn_req_token">Request Token</string>
-    <string name="btn_clear_credentials">Clear WebView Credentials</string>
+    <string name="bt_getProfile">Get User Profile</string>
+    <string name="bt_reqCode">Request Code</string>
+    <string name="bt_reqToken">Request Token</string>
+    <string name="bt_clearCredentials">Clear WebView Credentials</string>
+
+    <!-- app-content strings -->
+    <string name="main_resume">Resume</string>
+    <string name="main_auth">Do Not Follow The White Rabbit</string>
+    <string name="main_dislike">Dislike</string>
+    <string name="main_like">Like</string>
+
+    <!-- drawer -->
+    <string name="drawer_settings">Settings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_removeLiked">Remove from liked</string>
     <string name="drawer_removeList">Remove from list</string>
 
