@@ -91,14 +91,15 @@ public class MainActivity extends AppCompatActivity {
         btnBottomLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gManagementConnector.getRemote().like();
+                gManagementConnector.likeCurrentTrack();
             }
         });
 
         btnBottomRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gManagementConnector.getRemote().unlike();
+                gManagementConnector.unlikeCurrentTrack();
+
             }
         });
 
@@ -106,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
         btnBottomMiddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gManagementConnector.getRemote().resume();
+                gManagementConnector.resumePlayback();
+
             }
         });
 

@@ -50,7 +50,7 @@ public class RemoteHandler {
         SpotifyAppRemote.disconnect(gSpotifyAppRemote);
     }
 
-    public void subscribeToStates() {
+    private void subscribeToStates() {
         gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
             gPlayer = playerState;
         });

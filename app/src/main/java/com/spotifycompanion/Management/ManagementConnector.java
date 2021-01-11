@@ -25,9 +25,16 @@ public class ManagementConnector {
         gRemote = new RemoteHandler(pActivity);
     }
 
-    //might get deleted
-    public RemoteHandler getRemote() {
-        return gRemote;
+    public void likeCurrentTrack() {
+        gRemote.like();
+    }
+
+    public void unlikeCurrentTrack(){
+        gRemote.unlike();
+    }
+
+    public void resumePlayback(){
+        gRemote.resume();
     }
 
     public void initialize() {
