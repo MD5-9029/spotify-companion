@@ -50,7 +50,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String lQuery = "SELECT COUNT(*) FROM " + gTable + " WHERE uri = \"" + pUri + "\";";
         Cursor lCursor = lDb.rawQuery(lQuery, null);
 
-
         if (lCursor.moveToFirst()) {
             int lCount = lCursor.getInt(0);
             lCursor.close();
@@ -59,6 +58,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             lCursor.close();
             return -1;
         }
+    }
+
+    /**
+     * removes a single entry with matching uri
+     * @param pUri uri entry to remove
+     */
+    public void removeOneSkipped(String pUri){
+
+    }
+
+    /**
+     * removes all entries with matching uri
+     * @param pUri uri entries to remove
+     */
+
+    public void removeAllSkipped(String pUri){
+
+    }
+
+    /**
+     * empties entire database
+     */
+    public void removeAllSkipped(){
+
     }
 
 }

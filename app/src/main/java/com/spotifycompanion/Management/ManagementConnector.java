@@ -1,8 +1,6 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -29,21 +27,17 @@ public class ManagementConnector {
 
     public void initialize() {
         this.connectRemote();
-
     }
 
     public void close() {
         this.disconnectRemote();
-
     }
 
     public void connectRemote() {
         gRemote.connect();
-
     }
 
     public void disconnectRemote() {
-
         gRemote.disconnect();
     }
 
@@ -57,13 +51,14 @@ public class ManagementConnector {
 
     public void resumePlayback() {
         gRemote.resume();
-        test();
     }
 
-    //database test
-    public void test(){
-        gDatabaseHandler.addSkipped("test");
-        Integer lI = gDatabaseHandler.getSkipped("test");
+    private void addToSkipped(String pUri) {
+        gDatabaseHandler.addSkipped(pUri);
+    }
+
+    private int getSkipped(String pUri) {
+        return gDatabaseHandler.getSkipped(pUri);
     }
 
 }
