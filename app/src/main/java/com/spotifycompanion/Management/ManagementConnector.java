@@ -23,7 +23,7 @@ public class ManagementConnector {
     public ManagementConnector(MainActivity pActivity) {
         gActivity = pActivity;
         gDatabaseHandler = new DatabaseHandler(pActivity);
-        gRemote = new RemoteHandler(pActivity);
+        gRemote = new RemoteHandler(pActivity, gDatabaseHandler);
     }
 
     //not optimal, method authorized before returning auth-state

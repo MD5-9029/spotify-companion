@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar gToolbarTop;
     DrawerLayout gDrawerLayout;
     ImageView gImageView;
+    Switch gDeleteFromList, gDeleteFromLiked;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         gImageView = findViewById(R.id.iv_mainCover);
+        gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+        gDeleteFromList = findViewById(R.id.sw_rmList);
     }
 
 
@@ -86,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
 
     public ImageView getCoverView() {
         return gImageView;
+    }
+
+    public boolean deleteFromLiked(){
+        return true;
+        //return gDeleteFromList.isSelected();
+    }
+
+    public boolean deleteFromList(){
+        return false;
+        //return gDeleteFromList.isSelected();
     }
 
     public void skipForward(View view) {

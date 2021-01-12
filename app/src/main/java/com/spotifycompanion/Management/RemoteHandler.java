@@ -19,12 +19,20 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
+    private static final int gSkippedLimit = 3;
+
     private MainActivity gActivity;
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
+    private DatabaseHandler gDatabase;
 
-    public RemoteHandler(MainActivity pActivity) {
+    //required for removal from list
+    private RESTHandler gRestHandler;
+
+
+    public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase) {
         gActivity = pActivity;
+        gDatabase = pDatabase;
     }
 
     /**
@@ -85,6 +93,16 @@ public class RemoteHandler {
 
     public void skipForward() {
         try {
+            String lUri = gPlayer.track.uri;
+            gDatabase.addSkipped(lUri);
+            if (gDatabase.getSkipped(lUri) >= gSkippedLimit) {
+                if (gActivity.deleteFromLiked()) {
+                    unlike();
+                }
+                if (gActivity.deleteFromList()) {
+                    removeFromList();
+                }
+            }
             gSpotifyAppRemote.getPlayerApi().skipNext();
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
@@ -116,6 +134,11 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+
+    public void removeFromList() {
+
     }
 }
 

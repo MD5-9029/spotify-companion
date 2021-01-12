@@ -56,13 +56,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase lDb = this.getReadableDatabase();
         String lQuery = "SELECT COUNT(*) FROM " + gTable + " WHERE uri = \"" + pUri + "\";";
         Cursor lCursor = lDb.rawQuery(lQuery, null);
-        lDb.close();
+
 
         if (lCursor.moveToFirst()) {
             int lCount = lCursor.getInt(0);
+            lDb.close();
             lCursor.close();
             return lCount;
         } else {
+            lDb.close();
             lCursor.close();
             return -1;
         }
