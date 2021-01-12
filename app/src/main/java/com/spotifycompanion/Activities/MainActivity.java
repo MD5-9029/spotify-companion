@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,9 +33,9 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
-    Button btBottomLeft, btBottomRight, btLogInOut, btBottomMiddle;
-    Toolbar tbTop;
-    DrawerLayout dlLeft;
+    Toolbar gToolbarTop;
+    DrawerLayout gDrawerLayout;
+    ImageView gImageView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,21 +58,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
-        tbTop = findViewById(R.id.toolbar);
+        gToolbarTop = findViewById(R.id.toolbar);
 
-        setSupportActionBar(tbTop);
-        dlLeft = findViewById(R.id.main_view);
+        setSupportActionBar(gToolbarTop);
+        gDrawerLayout = findViewById(R.id.main_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, dlLeft, tbTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        dlLeft.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        gDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        gImageView = findViewById(R.id.iv_mainCover);
     }
 
 
     @Override
     public void onBackPressed() {
-        if (dlLeft.isDrawerOpen(Gravity.LEFT)) {
-            dlLeft.closeDrawer(Gravity.LEFT);
+        if (gDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            gDrawerLayout.closeDrawer(Gravity.LEFT);
         } else {
             super.onBackPressed();
         }
@@ -79,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void resume(View v) {
         gManagementConnector.resumePlayback();
+
+        //relocate to some listener callback for automization
+        gManagementConnector.updateImage(gImageView);
     }
 
     public void like(View view) {

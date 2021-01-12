@@ -2,6 +2,7 @@ package com.spotifycompanion.Management;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -41,6 +42,10 @@ public class ManagementConnector {
 
     public void disconnectRemote() {
         gRemote.disconnect();
+    }
+
+    public void updateImage(ImageView pIV){
+        gRemote.updateImage(pIV);
     }
 
     public void likeCurrentTrack(View view) {

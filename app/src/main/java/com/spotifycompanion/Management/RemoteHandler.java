@@ -2,8 +2,8 @@ package com.spotifycompanion.Management;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -57,6 +57,11 @@ public class RemoteHandler {
 
     }
 
+    public void updateImage(ImageView pIV) {
+        gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
+            pIV.setImageBitmap(bitmap);
+        });
+    }
 
     public void resume() {
         try {
