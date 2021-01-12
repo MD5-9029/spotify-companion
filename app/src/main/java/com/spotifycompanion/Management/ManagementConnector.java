@@ -1,10 +1,6 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.ImageView;
-
-import androidx.annotation.Nullable;
 
 import com.spotifycompanion.Activities.MainActivity;
 
@@ -30,6 +26,11 @@ public class ManagementConnector {
         gRemote = new RemoteHandler(pActivity);
     }
 
+    //not optimal, method authorized before returning auth-state
+    public boolean isAuthorized() {
+        return gRESTHandler.authorizeUser();
+    }
+
     public void initialize() {
         this.connectRemote();
     }
@@ -46,7 +47,7 @@ public class ManagementConnector {
         gRemote.disconnect();
     }
 
-    public void likeCurrentTrack(View view) {
+    public void likeCurrentTrack() {
         gRemote.like();
     }
 
@@ -54,17 +55,21 @@ public class ManagementConnector {
         gRemote.unlike();
     }
 
-    public void resumePlayback() {
-        gRemote.resume();
+    public void togglePlayback() {
+        gRemote.togglePlayback();
     }
+
+    public void skipForward() {
+        gRemote.skipForward();
+    }
+
+    public void skipBackward() {
+        gRemote.skipBackward();
+    }
+
 
     public void clearSkipped() {
         gDatabaseHandler.removeAllSkipped();
     }
 
-
-    //not optimal, method authorized before returning auth-state
-    public boolean isAuthorized() {
-        return gRESTHandler.authorizeUser();
-    }
 }

@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
-        gToolbarTop = findViewById(R.id.toolbar);
+        gToolbarTop = findViewById(R.id.tb_top);
 
         setSupportActionBar(gToolbarTop);
         gDrawerLayout = findViewById(R.id.main_view);
@@ -80,20 +80,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void resume(View v) {
-        gManagementConnector.resumePlayback();
+    public void togglePlayback(View v) {
+        gManagementConnector.togglePlayback();
     }
 
-    public ImageView getCoverView(){
+    public ImageView getCoverView() {
         return gImageView;
     }
 
-    public void like(View view) {
-        gManagementConnector.likeCurrentTrack(view);
+    public void skipForward(View view) {
+        gManagementConnector.skipForward();
     }
 
-    public void unLike(View view) {
-        gManagementConnector.unlikeCurrentTrack();
+    public void skipBackward(View view) {
+        gManagementConnector.skipBackward();
     }
 
     public void clearSkipped(View view) {
@@ -103,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void rest(View view) {
         Button lBt = findViewById(R.id.bt_logInOut);
-        if(gManagementConnector.isAuthorized()) {
+        if (gManagementConnector.isAuthorized()) {
             cancelCall();
             onClearCredentialsClicked();
 
             lBt.setText(R.string.drawer_logIn);
-        }else{
+        } else {
             getUserProfile();
 
             lBt.setText(R.string.drawer_logOut);

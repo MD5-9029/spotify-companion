@@ -1,9 +1,7 @@
 package com.spotifycompanion.Management;
 
 
-import android.app.Activity;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -52,34 +50,72 @@ public class RemoteHandler {
     }
 
     private void subscribeToStates() {
-        gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
-            gPlayer = playerState;
-            updateImage();
-        });
+        try {
+            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
+                gPlayer = playerState;
+                updateImage();
+            });
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void updateImage() {
-        gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
-            gActivity.getCoverView().setImageBitmap(bitmap);
-        });
+        try {
+            gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
+                gActivity.getCoverView().setImageBitmap(bitmap);
+            });
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
-    public void resume() {
+    public void togglePlayback() {
         try {
-            gSpotifyAppRemote.getPlayerApi().resume();
-        } catch (java.lang.Exception e) {
+            if (gPlayer.isPaused) {
+                gSpotifyAppRemote.getPlayerApi().resume();
+            } else {
+                gSpotifyAppRemote.getPlayerApi().pause();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void skipForward() {
+        try {
+            gSpotifyAppRemote.getPlayerApi().skipNext();
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void skipBackward() {
+        try {
+            gSpotifyAppRemote.getPlayerApi().skipPrevious();
+        } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
     public void like() {
-        Track lTrack = gPlayer.track;
-        gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+        try {
+            Track lTrack = gPlayer.track;
+            gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void unlike() {
-        Track lTrack = gPlayer.track;
-        gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+        try {
+            Track lTrack = gPlayer.track;
+            gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 }
 
