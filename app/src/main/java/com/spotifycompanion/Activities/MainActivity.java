@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         gImageView = findViewById(R.id.iv_mainCover);
-        gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
-        gDeleteFromList = findViewById(R.id.sw_rmList);
-    }
+
+        
+     }
 
 
     @Override
@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean deleteFromLiked(){
-        return true;
-        //return gDeleteFromList.isSelected();
+        gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+        return gDeleteFromLiked.isChecked();
     }
 
     public boolean deleteFromList(){
-        return false;
-        //return gDeleteFromList.isSelected();
+        gDeleteFromList = findViewById(R.id.sw_rmList);
+        return gDeleteFromList.isChecked();
     }
 
     public void skipForward(View view) {
