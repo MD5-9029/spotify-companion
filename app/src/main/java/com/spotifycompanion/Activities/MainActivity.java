@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout gDrawerLayout;
     ImageView gImageView;
     Switch gDeleteFromList, gDeleteFromLiked;
+    
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,13 +66,28 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(gToolbarTop);
         gDrawerLayout = findViewById(R.id.main_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                gDeleteFromList = findViewById(R.id.sw_rmList);
+                gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+
+                gDeleteFromLiked.setChecked(true);
+                gDeleteFromList.setChecked(true);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
         gDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
         gImageView = findViewById(R.id.iv_mainCover);
 
-        
      }
 
 
