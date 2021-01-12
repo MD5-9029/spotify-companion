@@ -11,6 +11,7 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
+import com.spotifycompanion.Activities.MainActivity;
 
 /**
  * remote handler manages interaction (requests) with the main app.
@@ -20,11 +21,11 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-    private Activity gActivity;
+    private MainActivity gActivity;
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
 
-    public RemoteHandler(Activity pActivity) {
+    public RemoteHandler(MainActivity pActivity) {
         gActivity = pActivity;
     }
 
@@ -53,13 +54,13 @@ public class RemoteHandler {
     private void subscribeToStates() {
         gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
             gPlayer = playerState;
+            updateImage();
         });
-
     }
 
-    public void updateImage(ImageView pIV) {
+    private void updateImage() {
         gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
-            pIV.setImageBitmap(bitmap);
+            gActivity.getCoverView().setImageBitmap(bitmap);
         });
     }
 

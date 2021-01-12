@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import com.spotifycompanion.Activities.MainActivity;
+
 /**
  * class containing and managing all components below view
  */
@@ -22,7 +24,7 @@ public class ManagementConnector {
      *
      * @param pActivity context from MainActivity
      */
-    public ManagementConnector(@Nullable Activity pActivity) {
+    public ManagementConnector(MainActivity pActivity) {
         gActivity = pActivity;
         gDatabaseHandler = new DatabaseHandler(pActivity);
         gRemote = new RemoteHandler(pActivity);
@@ -44,10 +46,6 @@ public class ManagementConnector {
         gRemote.disconnect();
     }
 
-    public void updateImage(ImageView pIV){
-        gRemote.updateImage(pIV);
-    }
-
     public void likeCurrentTrack(View view) {
         gRemote.like();
     }
@@ -60,11 +58,13 @@ public class ManagementConnector {
         gRemote.resume();
     }
 
-    public void clearSkipped(){
+    public void clearSkipped() {
         gDatabaseHandler.removeAllSkipped();
     }
 
+
+    //not optimal, method authorized before returning auth-state
     public boolean isAuthorized() {
-        return authorized;
+        return gRESTHandler.authorizeUser();
     }
 }

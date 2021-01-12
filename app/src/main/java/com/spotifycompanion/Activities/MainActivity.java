@@ -82,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void resume(View v) {
         gManagementConnector.resumePlayback();
+    }
 
-        //relocate to some listener callback for automization
-        gManagementConnector.updateImage(gImageView);
+    public ImageView getCoverView(){
+        return gImageView;
     }
 
     public void like(View view) {
