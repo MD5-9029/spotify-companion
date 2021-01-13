@@ -4,23 +4,20 @@ import android.net.Uri;
 
 public class AuthorizationConfig {
     /**
-     * Die ID der Application von Spotify gegeben
+     * The ID of the application given by Spotify
      */
     public final String CLIENT_ID = "4234dd4558284817abdb7c7ecc4d7df7";
 
     /**
-     * Der URI, zu dem umgeleitet werden soll, nachdem der Benutzer die Genehmigung erteilt oder verweigert hat.
+     * The URI to redirect to after the user grants or denies permission.
      * <p>
-     * Dieser URI muss in der Whitelist "Redirect URI" eingetragen worden sein,
-     * die Sie bei der Registrierung Ihrer Anwendung angegeben haben.
-     * Der Wert von redirect_uri muss hier genau mit einem der Werte übereinstimmen,
-     * die Sie bei der Registrierung Ihrer Anwendung eingegeben haben,
-     * einschließlich Groß- oder Kleinschreibung, abschließende Schrägstriche usw.
+     * This URI must have been entered in the "Redirect URI" whitelist that you specified when you registered your application.
+     * The value of redirect_uri here must exactly match one of the values you entered when registering your application, including case sensitivity, trailing slashes, etc.
      * </p>
      */
     public final String REDIRECT_URI = "spotifyCompanion://authCall";
     /**
-     * Die Art der Response der API
+     * The type of response of the API
      */
     private String response_type = "code";
     /**
