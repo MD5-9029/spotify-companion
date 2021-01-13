@@ -91,7 +91,6 @@ public class RESTHandler {
             postData.put("grant_type", "refresh_token");
             postData.put("refresh_token", mRefreshToken);
             JSONObject result = postData(path, postData.toString());
-            Log.i("Refresh Call", result.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
