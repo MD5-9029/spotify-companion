@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.spotifycompanion.Management.ManagementConnector;
 import com.spotifycompanion.R;
+import com.spotifycompanion.models.Playlist;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 gEditor.putInt("dest", gDestination.getSelectedItemPosition());
 
                 gEditor.apply();
+
+                gManagementConnector.setPlaylist(((Playlist) gOrigin.getSelectedItem()).uri);
             }
         };
         gDrawerLayout.addDrawerListener(toggle);
@@ -134,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean deleteFromList() {
         return gPreferences.getBoolean("list", true);
+    }
+
+    public Playlist getOriginList() {
+        gOrigin = findViewById(R.id.sp_srcList);
+        return (Playlist) gOrigin.getSelectedItem();
     }
 
     public void skipForward(View view) {

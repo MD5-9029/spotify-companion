@@ -65,6 +65,10 @@ public class ManagementConnector {
         gRemote.skipForward();
     }
 
+    public void setPlaylist(String pUri){
+        gRemote.setPlaylist(pUri);
+    }
+
     /**
      * Attempts to authorize application access
      */

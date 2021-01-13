@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
-import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Repeat;
@@ -97,6 +96,14 @@ public class RemoteHandler {
         }
     }
 
+    public void setPlaylist(String pUri){
+        try {
+            gSpotifyAppRemote.getPlayerApi().play(pUri);
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void skipForward() {
         try {
             String lUri = gPlayer.track.uri;
@@ -106,7 +113,7 @@ public class RemoteHandler {
                     unlike();
                 }
                 if (gActivity.deleteFromList()) {
-                    removeFromList();
+                    removeCurrentFromOriginList();
                 }
             }
             gSpotifyAppRemote.getPlayerApi().skipNext();
@@ -142,9 +149,10 @@ public class RemoteHandler {
         }
     }
 
-
-    public void removeFromList() {
-
+    public void removeCurrentFromOriginList() {
+        String[] lRemove = new String[1];
+        lRemove[0] = gPlayer.track.uri;
+        gRestHandler.removeFromPlaylist(gActivity.getOriginList().id, lRemove);
     }
 }
 
