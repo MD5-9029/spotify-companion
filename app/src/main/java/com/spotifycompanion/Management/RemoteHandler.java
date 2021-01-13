@@ -175,8 +175,7 @@ public class RemoteHandler {
 
     public void like() {
         try {
-            Track lTrack = gPlayer.track;
-            gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+            gSpotifyAppRemote.getUserApi().addToLibrary(gPreviousTrackUri);
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
@@ -193,7 +192,7 @@ public class RemoteHandler {
 
     public void addCurrentToDestinationPlaylist() {
         String[] lAdd = new String[1];
-        lAdd[0] = gPlayer.track.uri;
+        lAdd[0] = gPreviousTrackUri;
         gRestHandler.addToPlaylist(gActivity.getDestinationList().id, lAdd);
     }
 
