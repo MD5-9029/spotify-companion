@@ -36,7 +36,7 @@ public class ManagementConnector {
      */
     public ManagementConnector(MainActivity pActivity) {
         gActivity = pActivity;
-        gRESTHandler = new RESTHandler();
+        gRESTHandler = new RESTHandler(pActivity);
         gDatabaseHandler = new DatabaseHandler(pActivity);
         gRemote = new RemoteHandler(gActivity, gDatabaseHandler, gRESTHandler);
     }
@@ -99,6 +99,7 @@ public class ManagementConnector {
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessToken = response.getAccessToken();
+            gRESTHandler.mExpiresIn = response.getExpiresIn();
             return authorized = true;
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessCode = response.getCode();
