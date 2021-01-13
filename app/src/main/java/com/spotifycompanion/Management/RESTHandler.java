@@ -113,7 +113,7 @@ public class RESTHandler {
         if (mAccessToken == null) {
             return null;
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), postData.toString());
+        RequestBody body = RequestBody.create(postData.toString(), MediaType.parse("application/json"));
 
         final Request request = new Request.Builder()
                 .url(route)
