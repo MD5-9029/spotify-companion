@@ -68,19 +68,11 @@ public class RESTHandler {
         AuthorizationClient.clearCookies(contextActivity);
     }
 
-    protected void onActivityResultCallback(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-
-        if (this.authConfig.AUTH_TOKEN_REQUEST_CODE == requestCode) {
-            mAccessToken = response.getAccessToken();
-
-        } else if (this.authConfig.AUTH_CODE_REQUEST_CODE == requestCode) {
-            mAccessCode = response.getCode();
-
-        }
-    }
-
+    /**
+     * Utility function to send a GET request to the API
+     * @param route the url for the request
+     * @return JSON data object
+     */
     public JSONObject requestData(String route) {
         JSONObject data = null;
         if (mAccessToken == null) {
@@ -107,6 +99,10 @@ public class RESTHandler {
         return data;
     }
 
+    /**
+     * Returns profile of logged-in user
+     * @return User Profile Object | null
+     */
     public User getUserProfile() {
         String route = "https://api.spotify.com/v1/me";
         User user = null;
@@ -116,6 +112,11 @@ public class RESTHandler {
         }
         return user;
     }
+
+    /**
+     * Returns max. 50 playlist of logged-in user
+     * @return Playlists Object | null
+     */
     public Playlists getUserPlaylists(){
         String route = "https://api.spotify.com/v1/me/playlists?limit=50";
         Playlists playlists = null;
@@ -126,6 +127,11 @@ public class RESTHandler {
         return playlists;
     }
 
+    /**
+     * Requests specific playlist via ID
+     * @param playlist_id Unique string id
+     * @return Playlist Object | null
+     */
     public Playlist getPlaylist(String playlist_id) {
         String route = String.format("https://api.spotify.com/v1/playlists/%s", playlist_id);
         Playlist playlist = null;
@@ -144,10 +150,7 @@ public class RESTHandler {
     }
 
     public Boolean getRefreshAndAccessToken() {
-        if (!this.isAuthorized) return false;
 
-        //this.accessToken = "";
-        //this.refreshToken = "";
         return true;
     }
 
