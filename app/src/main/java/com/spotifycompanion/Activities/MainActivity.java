@@ -144,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
         return (Playlist) gOrigin.getSelectedItem();
     }
 
+    public Playlist getDestinationList(){
+        gDestination = findViewById(R.id.sp_dstList);
+        return  (Playlist) gDestination.getSelectedItem();
+    }
+
     public void skipForward(View view) {
         gManagementConnector.skipForward();
     }
