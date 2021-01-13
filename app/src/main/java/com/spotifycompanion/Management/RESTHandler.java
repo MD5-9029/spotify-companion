@@ -12,6 +12,7 @@ import com.spotifycompanion.models.Playlist;
 import com.spotifycompanion.models.Playlists;
 import com.spotifycompanion.models.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -105,16 +106,16 @@ public class RESTHandler {
     /**
      * Utility function to send a POST request to the API
      * @param route the url for the request
-     * @param postData the post data in JSON type
+     * @param jsonString the post data in JSON type
      * @return JSON data response
      */
-    public JSONObject postData(String route, JSONObject postData) {
+    public JSONObject postData(String route, String jsonString) {
         JSONObject data = null;
         if (mAccessToken == null) {
             return null;
         }
-        RequestBody body = RequestBody.create(postData.toString(), MediaType.parse("application/json"));
-
+        RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
+        String test = body.toString();
         final Request request = new Request.Builder()
                 .url(route)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
@@ -138,11 +139,46 @@ public class RESTHandler {
     }
 
     /**
+     * Utility function to send a DELETE request to the API
+     * @param route the url for the request
+     * @param jsonString the post data in JSON type
+     * @return JSON data response
+     */
+    public JSONObject deleteData(String route, String jsonString) {
+        JSONObject data = null;
+        if (mAccessToken == null) {
+            return null;
+        }
+        RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
+        String test = body.toString();
+        final Request request = new Request.Builder()
+                .url(route)
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .delete(body)
+                .build();
+
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+        try {
+            Response response = mCall.execute();
+            try {
+                data = new JSONObject(Objects.requireNonNull(response.body()).string());
+            } catch (JSONException | IOException e) {
+                Log.e("response", "Cannot convert reply to JSON");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    /**
      * Returns profile of logged-in user
      * @return User Profile Object | null
      */
     public User getUserProfile() {
-        String route = "https://api.spotify.com/v1/me";
+        final String route = "https://api.spotify.com/v1/me";
         User user = null;
         JSONObject data = requestData(route);
         if(data != null) {
@@ -156,7 +192,7 @@ public class RESTHandler {
      * @return Playlists Object | null
      */
     public Playlists getUserPlaylists(){
-        String route = "https://api.spotify.com/v1/me/playlists?limit=50";
+        final String route = "https://api.spotify.com/v1/me/playlists?limit=50";
         Playlists playlists = null;
         JSONObject data = requestData(route);
         if(data != null) {
@@ -171,13 +207,62 @@ public class RESTHandler {
      * @return Playlist Object | null
      */
     public Playlist getPlaylist(String playlist_id) {
-        String route = String.format("https://api.spotify.com/v1/playlists/%s", playlist_id);
+        final String route = String.format("https://api.spotify.com/v1/playlists/%s", playlist_id);
         Playlist playlist = null;
         JSONObject data = requestData(route);
         if(data != null) {
             playlist = new Playlist(data);
         }
         return playlist;
+    }
+
+    /**
+     * Adds to a given playlist_id a list of tracks given in form of a comma-seperated uri-string
+     * @param playlist_id 	The Spotify ID for the playlist.
+     * @param track_uri_list Optional. A comma-separated list of Spotify URIs to add, can be track or episode URIs. For example:
+     * uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ
+     * @return true if successful
+     */
+    public boolean addToPlaylist(String playlist_id, String[] track_uri_list){
+        final String route = String.format("https://api.spotify.com/v1/playlists/%s/tracks", playlist_id);
+        JSONObject postData = new JSONObject();
+        try {
+            JSONArray uri_list = new JSONArray(track_uri_list);
+            postData.put("uris", uri_list);
+            String jsonString = postData.toString();
+            JSONObject response = this.postData(route, postData.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Adds to a given playlist_id a list of tracks given in form of a comma-seperated uri-string
+     * @param playlist_id 	The Spotify ID for the playlist.
+     * @param track_uri_list Optional. A comma-separated list of Spotify URIs to add, can be track or episode URIs. For example:
+     * uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ
+     * @return true if successful
+     */
+    public boolean removeFromPlaylist(String playlist_id, String[] track_uri_list){
+        final String route = String.format("https://api.spotify.com/v1/playlists/%s/tracks", playlist_id);
+        JSONObject postData = new JSONObject();
+        try {
+            JSONArray uri_list_json = new JSONArray();
+            for (String s : track_uri_list) {
+                JSONObject entry = new JSONObject();
+                entry.put("uri", s);
+                uri_list_json.put(entry);
+            }
+            postData.put("tracks", uri_list_json);
+            String jsonString = postData.toString();
+            JSONObject response = this.deleteData(route, postData.toString());
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Boolean authorizeUser(Activity contextActivity){
