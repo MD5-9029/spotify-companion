@@ -1,6 +1,7 @@
 package com.spotifycompanion.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,13 +40,21 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout gDrawerLayout;
     ImageView gImageView;
     Switch gDeleteFromList, gDeleteFromLiked;
-    
+    SharedPreferences gPreferences;
+    SharedPreferences.Editor gEditor;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         getAllByID();
+
+        gPreferences = getSharedPreferences("spotifyCompanion", MODE_PRIVATE);
+        gEditor = getSharedPreferences("spotifyCompanion", MODE_PRIVATE).edit();
+
+        gDrawerLayout.openDrawer(Gravity.LEFT);
+        gDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
     @Override
@@ -66,20 +76,28 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(gToolbarTop);
         gDrawerLayout = findViewById(R.id.main_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 gDeleteFromList = findViewById(R.id.sw_rmList);
                 gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
 
-                gDeleteFromLiked.setChecked(true);
-                gDeleteFromList.setChecked(true);
+                gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
+                gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+
+                gDeleteFromList = findViewById(R.id.sw_rmList);
+                gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+
+                gEditor.putBoolean("list", gDeleteFromList.isChecked());
+                gEditor.putBoolean("liked", gDeleteFromLiked.isChecked());
+                gEditor.apply();
+
             }
         };
         gDrawerLayout.addDrawerListener(toggle);
@@ -88,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         gImageView = findViewById(R.id.iv_mainCover);
 
-     }
+    }
 
 
     @Override
@@ -108,14 +126,12 @@ public class MainActivity extends AppCompatActivity {
         return gImageView;
     }
 
-    public boolean deleteFromLiked(){
-        gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
-        return gDeleteFromLiked.isChecked();
+    public boolean deleteFromLiked() {
+        return gPreferences.getBoolean("liked", false);
     }
 
-    public boolean deleteFromList(){
-        gDeleteFromList = findViewById(R.id.sw_rmList);
-        return gDeleteFromList.isChecked();
+    public boolean deleteFromList() {
+        return gPreferences.getBoolean("list", true);
     }
 
     public void skipForward(View view) {
@@ -132,16 +148,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void rest(View view) {
-        Button lBt = findViewById(R.id.bt_logInOut);
-        if (gManagementConnector.isAuthorized()) {
-            cancelCall();
-            onClearCredentialsClicked();
+        try {
+            Button lBt = findViewById(R.id.bt_logInOut);
+            if (gManagementConnector.isAuthorized()) {
+                cancelCall();
+                onClearCredentialsClicked();
 
-            lBt.setText(R.string.drawer_logIn);
-        } else {
-            getUserProfile();
+                lBt.setText(R.string.drawer_logIn);
+            } else {
+                getUserProfile();
 
-            lBt.setText(R.string.drawer_logOut);
+                lBt.setText(R.string.drawer_logOut);
+            }
+        } catch (Exception e){
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT);
         }
     }
 
