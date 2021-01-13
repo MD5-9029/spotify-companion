@@ -10,6 +10,7 @@ import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 import com.spotifycompanion.models.Playlist;
 import com.spotifycompanion.models.Playlists;
+import com.spotifycompanion.models.SavedTracks;
 import com.spotifycompanion.models.User;
 
 import org.json.JSONArray;
@@ -17,7 +18,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,18 +35,25 @@ import okhttp3.Response;
 
 public class RESTHandler {
 
+    private final String APP_TOKEN = "spotify-companion-token";
     public final AuthorizationConfig authConfig = new AuthorizationConfig();
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
+    private final Activity contextActivity;
+    final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
     public String mAccessToken;
+    public String mTokenType;       // SDK does not supply String type
+    public String mScope;           // SDK does not supply this
+    public int mExpiresIn;
+    public String mRefreshToken;    // SDK does not supply this
     public String mAccessCode;
     private Call mCall;
 
+
     private Boolean isAuthorized = false;
-    public String refreshToken = "";
 
-    private final String APP_TOKEN = "spotify-companion-token";
 
-    public RESTHandler() {
+    public RESTHandler(Activity pActivity) {
+        this.contextActivity = pActivity;
     }
 
     public void cancelCall() {
@@ -68,6 +80,24 @@ public class RESTHandler {
         AuthorizationClient.openLoginActivity(contextActivity, this.authConfig.AUTH_CODE_REQUEST_CODE, request);
     }
 
+    /**
+     * Not functional due to missing refresh token
+     * @return false
+     */
+    public Boolean requestRefreshToken() {
+        final String path = "https://accounts.spotify.com/api/token";
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("grant_type", "refresh_token");
+            postData.put("refresh_token", mRefreshToken);
+            JSONObject result = postData(path, postData.toString());
+            Log.i("Refresh Call", result.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void clearCredentials(Activity contextActivity) {
         AuthorizationClient.clearCookies(contextActivity);
     }
@@ -80,6 +110,7 @@ public class RESTHandler {
     public JSONObject requestData(String route) {
         JSONObject data = null;
         if (mAccessToken == null) {
+            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
             return null;
         }
         final Request request = new Request.Builder()
@@ -100,6 +131,10 @@ public class RESTHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (data.has("error")){
+            this.requestToken(contextActivity);
+            return null;
+        }
         return data;
     }
 
@@ -112,6 +147,7 @@ public class RESTHandler {
     public JSONObject postData(String route, String jsonString) {
         JSONObject data = null;
         if (mAccessToken == null) {
+            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
             return null;
         }
         RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
@@ -135,6 +171,10 @@ public class RESTHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (data.has("error")){
+            this.requestToken(contextActivity);
+            return null;
+        }
         return data;
     }
 
@@ -147,6 +187,7 @@ public class RESTHandler {
     public JSONObject deleteData(String route, String jsonString) {
         JSONObject data = null;
         if (mAccessToken == null) {
+            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
             return null;
         }
         RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
@@ -169,6 +210,10 @@ public class RESTHandler {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (data.has("error")){
+            this.requestToken(contextActivity);
+            return null;
         }
         return data;
     }
@@ -229,9 +274,8 @@ public class RESTHandler {
         try {
             JSONArray uri_list = new JSONArray(track_uri_list);
             postData.put("uris", uri_list);
-            String jsonString = postData.toString();
             JSONObject response = this.postData(route, postData.toString());
-            return true;
+            return response != null;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -256,28 +300,53 @@ public class RESTHandler {
                 uri_list_json.put(entry);
             }
             postData.put("tracks", uri_list_json);
-            String jsonString = postData.toString();
             JSONObject response = this.deleteData(route, postData.toString());
-            return true;
+            return response != null;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public Boolean authorizeUser(Activity contextActivity){
-        this.requestToken(contextActivity);
-
-        this.isAuthorized = true;
-        return true;
+    /**
+     * @deprecated No longer used Todo: purge code
+     * Utility function to extract an integer at the end of a string
+     * @param input string containing some integer at the end
+     * @return the integer value
+     */
+    private int getOffsetNumber(String input){
+        Matcher matcher = lastIntPattern.matcher(input);
+        if (matcher.find()) {
+            String numberStr = matcher.group(1);
+            return Integer.parseInt(numberStr);
+        }
+        return 0;
     }
 
-    public Boolean getRefreshAndAccessToken() {
-
-        return true;
+    /**
+     * Return an SavedTracks object of all favorite tracks
+     * @return SavedTracks object | null
+     */
+    public SavedTracks getSavedTracks(){
+        final String routeBase = "https://api.spotify.com/v1/me/tracks?limit=50&offset=0";
+        SavedTracks savedTracks = null;
+        String nextRoute = routeBase;
+        while (nextRoute != null && !nextRoute.equals("null")){
+            JSONObject data = requestData(nextRoute);
+            if(data != null && savedTracks == null) {
+                savedTracks = new SavedTracks(data);
+            }
+            try {
+                JSONArray trackItems = data.getJSONArray("items");
+                Uri uri = Uri.parse(nextRoute);
+                int offset = Integer.parseInt(uri.getQueryParameter("offset"));
+                savedTracks.addTracks(trackItems, offset);
+                nextRoute = data.getString("next");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return savedTracks;
     }
 
-    public Boolean getNewAccessToken() {
-        return true;
-    }
 }
