@@ -6,8 +6,10 @@ import android.widget.Toast;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Repeat;
 import com.spotify.protocol.types.Track;
 import com.spotifycompanion.Activities.MainActivity;
 
@@ -25,14 +27,14 @@ public class RemoteHandler {
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
     private DatabaseHandler gDatabase;
-
-    //required for removal from list
     private RESTHandler gRestHandler;
 
 
-    public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase) {
+
+    public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
         gActivity = pActivity;
         gDatabase = pDatabase;
+        gRestHandler = pREST;
     }
 
     /**
@@ -45,6 +47,9 @@ public class RemoteHandler {
                     public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
                         gSpotifyAppRemote = pSpotifyAppRemote;
                         subscribeToStates();
+
+                        //setup playback for convenient use
+                        gSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.ALL);
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -62,6 +67,7 @@ public class RemoteHandler {
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
                 updateImage();
+
             });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();

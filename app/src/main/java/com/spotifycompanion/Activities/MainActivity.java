@@ -2,7 +2,6 @@ package com.spotifycompanion.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -10,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -18,25 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.spotify.sdk.android.auth.AuthorizationClient;
-import com.spotify.sdk.android.auth.AuthorizationRequest;
-import com.spotify.sdk.android.auth.AuthorizationResponse;
 import com.spotifycompanion.Management.ManagementConnector;
 import com.spotifycompanion.R;
-import com.spotifycompanion.models.Playlist;
-import com.spotifycompanion.models.Playlists;
-import com.spotifycompanion.models.User;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout gDrawerLayout;
     ImageView gImageView;
     Switch gDeleteFromList, gDeleteFromLiked;
+    Spinner gOrigin, gDestination;
+
     SharedPreferences gPreferences;
     SharedPreferences.Editor gEditor;
 
@@ -71,22 +56,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        gManagementConnector.initialize();
-        gManagementConnector.authorizeAccess(this);
+        gManagementConnector.connectRemote();
+        gManagementConnector.authorizeAccess();
     }
 
     @Override
     protected void onStop() {
+        gManagementConnector.disconnectRemote();
         super.onStop();
-        gManagementConnector.close();
     }
 
     private void getAllByID() {
-        gToolbarTop = findViewById(R.id.tb_top);
+        gImageView = findViewById(R.id.iv_mainCover);
 
+        gToolbarTop = findViewById(R.id.tb_top);
         setSupportActionBar(gToolbarTop);
         gDrawerLayout = findViewById(R.id.main_view);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -96,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
 
                 gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
                 gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
+
+                gOrigin = findViewById(R.id.sp_srcList);
+                gDestination = findViewById(R.id.sp_dstList);
+                gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
+
+                gOrigin.setSelection(gPreferences.getInt("src", 0));
+                gDestination.setSelection(gPreferences.getInt("dest", 0));
+
             }
 
             @Override
@@ -107,16 +100,18 @@ public class MainActivity extends AppCompatActivity {
 
                 gEditor.putBoolean("list", gDeleteFromList.isChecked());
                 gEditor.putBoolean("liked", gDeleteFromLiked.isChecked());
-                gEditor.apply();
 
+                gOrigin = findViewById(R.id.sp_srcList);
+                gDestination = findViewById(R.id.sp_dstList);
+
+                gEditor.putInt("src", gOrigin.getSelectedItemPosition());
+                gEditor.putInt("dest", gDestination.getSelectedItemPosition());
+
+                gEditor.apply();
             }
         };
         gDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-
-        gImageView = findViewById(R.id.iv_mainCover);
-
     }
 
 
@@ -127,10 +122,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    public void togglePlayback(View v) {
-        gManagementConnector.togglePlayback();
     }
 
     public ImageView getCoverView() {
@@ -157,15 +148,18 @@ public class MainActivity extends AppCompatActivity {
         gManagementConnector.clearSkipped();
     }
 
+    public void togglePlayback(View v) {
+        gManagementConnector.togglePlayback();
+    }
+
 
     public void rest(View view) {
-        try{
+        try {
             Button lBt = findViewById(R.id.bt_logInOut);
             Log.e("UI", "Button clicked");
 
 
-
-            if(gManagementConnector.isAuthorized()) {
+            if (gManagementConnector.isAuthorized()) {
                 //logout
                 gManagementConnector.disallowAccess(this); //comment out if testing the examples
                 lBt.setText(R.string.drawer_logIn);
@@ -177,12 +171,12 @@ public class MainActivity extends AppCompatActivity {
 //              list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[3].id);
 //              gManagementConnector.gRESTHandler.addToPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
 //              gManagementConnector.gRESTHandler.removeFromPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
-            }else{
+            } else {
                 //login
-                gManagementConnector.authorizeAccess(this);
+                gManagementConnector.authorizeAccess();
                 //lBt.setText(R.string.drawer_logOut); //button text change on successful login (onActivityResult)
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT);
         }
     }
@@ -196,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         Button lBt = findViewById(R.id.bt_logInOut);
         if (requestCode == gManagementConnector.AUTH_TOKEN_REQUEST_CODE) {
             boolean hasAccess = gManagementConnector.authorizeCallback(requestCode, resultCode, data);
-            if (hasAccess)lBt.setText(R.string.drawer_logOut);
+            if (hasAccess) lBt.setText(R.string.drawer_logOut);
         }
     }
 }

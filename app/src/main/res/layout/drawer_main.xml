@@ -28,7 +28,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tw_drawerTop" />
+        app:layout_constraintTop_toBottomOf="@+id/tw_origin" />
 
     <Switch
         android:id="@+id/sw_rmLiked"
@@ -65,7 +65,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_rmList" />
+        app:layout_constraintTop_toBottomOf="@+id/tw_destination" />
 
     <Button
         android:id="@+id/bt_logInOut"
@@ -87,5 +87,29 @@
         android:text="@string/drawer_clearSkipped"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_logInOut" />
+
+    <TextView
+        android:id="@+id/tw_origin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/drawer_originList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tw_drawerTop" />
+
+    <TextView
+        android:id="@+id/tw_destination"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/drawer_destinationList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sw_rmList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

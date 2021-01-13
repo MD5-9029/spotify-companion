@@ -2,15 +2,18 @@ package com.spotifycompanion.Management;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
-
-import com.spotifycompanion.Activities.MainActivity;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+import com.spotifycompanion.Activities.MainActivity;
 import com.spotifycompanion.R;
+import com.spotifycompanion.models.Playlist;
 
-import okhttp3.Response;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * class containing and managing all components below view
@@ -19,7 +22,7 @@ public class ManagementConnector {
     public final int AUTH_TOKEN_REQUEST_CODE = 0x10;
     public final int AUTH_CODE_REQUEST_CODE = 0x11;
 
-    private Activity gActivity;
+    private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
     private DataParser gDataParser;
@@ -33,17 +36,9 @@ public class ManagementConnector {
      */
     public ManagementConnector(MainActivity pActivity) {
         gActivity = pActivity;
-        gDatabaseHandler = new DatabaseHandler(pActivity);
-        gRemote = new RemoteHandler(pActivity, gDatabaseHandler);
         gRESTHandler = new RESTHandler();
-    }
-
-    public void initialize() {
-        this.connectRemote();
-    }
-
-    public void close() {
-        this.disconnectRemote();
+        gDatabaseHandler = new DatabaseHandler(pActivity);
+        gRemote = new RemoteHandler(gActivity, gDatabaseHandler, gRESTHandler);
     }
 
     public void connectRemote() {
@@ -72,14 +67,14 @@ public class ManagementConnector {
 
     /**
      * Attempts to authorize application access
-     * @param contextActivity
      */
-    public void authorizeAccess(Activity contextActivity) {
-        this.gRESTHandler.requestToken(contextActivity);
+    public void authorizeAccess() {
+        this.gRESTHandler.requestToken(gActivity);
     }
 
     /**
      * Clears Cookies and forces re-login
+     *
      * @param contextActivity
      */
     public void disallowAccess(Activity contextActivity) {
@@ -90,6 +85,7 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to authorize application access
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -108,6 +104,7 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to receive an auth code from the API
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -121,18 +118,39 @@ public class ManagementConnector {
         }
         return false;
     }
+
     public boolean isAuthorized() {
         return authorized;
     }
-
 
     public void skipBackward() {
         gRemote.skipBackward();
     }
 
-
     public void clearSkipped() {
         gDatabaseHandler.removeAllSkipped();
+    }
+
+    /***
+     * fill spinners with names of selectable playlists
+     * @param pOrigin spinner the list of playlists should be displayed in
+     * @param pDestination spinner the list of playlists should be displayed in
+     */
+    public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
+        List<Playlist> lLists = Arrays.asList(gRESTHandler.getUserPlaylists().items);
+
+        lLists.sort(new Comparator<Playlist>() {
+            @Override
+            public int compare(Playlist o1, Playlist o2) {
+                return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+            }
+        });
+
+        ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, lLists);
+        lAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        pOrigin.setAdapter(lAdapter);
+        pDestination.setAdapter(lAdapter);
     }
 
 }

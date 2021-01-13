@@ -32,5 +32,7 @@
     <string name="drawer_logIn">LogIn</string>
     <string name="drawer_logOut">LogOut</string>
     <string name="drawer_clearSkipped">Clear Skipped</string>
+    <string name="drawer_destinationList">Destination List</string>
+    <string name="drawer_originList">Origin List</string>
 
 </resources>

@@ -66,6 +66,7 @@ public class Playlist {
      */
     public String uri;
 
+
     public Playlist(boolean collaborative, String description, String href, String id, Image[] images, String name, User owner, Boolean is_public, PlaylistTrack[] tracks, String uri) {
         //snapshots skipped for now
         this.collaborative = collaborative;
@@ -114,5 +115,9 @@ public class Playlist {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public String toString(){
+        return name;
     }
 }
