@@ -20,14 +20,17 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-    private static final int gSkippedLimit = 3;
+    private static final int SKIPPED_LIMIT = 3;
+    private static final long TOLERANCE = 3000;
+
 
     private MainActivity gActivity;
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
     private DatabaseHandler gDatabase;
     private RESTHandler gRestHandler;
-
+    private long gTime;
+    private String gPreviousTrackUri;
 
 
     public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
@@ -65,12 +68,26 @@ public class RemoteHandler {
         try {
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
-                updateImage();
 
+                if (!gPlayer.track.uri.equals(gPreviousTrackUri) && gTime > System.currentTimeMillis()) {
+                    remove();
+                } else if (!gPlayer.track.uri.equals(gPreviousTrackUri) && gTime < System.currentTimeMillis()) {
+                    add();
+                }
+
+                updateImage();
+                setTime();
             });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+
+
+    }
+
+    public void setTime() {
+        gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
+        gPreviousTrackUri = gPlayer.track.uri;
     }
 
     private void updateImage() {
@@ -94,21 +111,31 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+        setTime();
     }
 
-    public void setPlaylist(String pUri){
+    public void setPlaylist(String pUri) {
         try {
             gSpotifyAppRemote.getPlayerApi().play(pUri);
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+        setTime();
     }
 
     public void skipForward() {
         try {
-            String lUri = gPlayer.track.uri;
+            gSpotifyAppRemote.getPlayerApi().skipNext();
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void remove() {
+        try {
+            String lUri = gPreviousTrackUri;
             gDatabase.addSkipped(lUri);
-            if (gDatabase.getSkipped(lUri) >= gSkippedLimit) {
+            if (gDatabase.getSkipped(lUri) >= SKIPPED_LIMIT) {
                 if (gActivity.deleteFromLiked()) {
                     unlike();
                 }
@@ -116,11 +143,25 @@ public class RemoteHandler {
                     removeCurrentFromOriginList();
                 }
             }
-            gSpotifyAppRemote.getPlayerApi().skipNext();
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
 
+    public void add() {
+        try {
+            String lUri = gPreviousTrackUri;
+            gDatabase.removeAllSkipped(lUri);
+
+            if (gActivity.deleteFromLiked()) {
+                like();
+            }
+            if (gActivity.deleteFromList()) {
+                addCurrentToDestinationPlaylist();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void skipBackward() {
@@ -129,6 +170,7 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+        setTime();
     }
 
     public void like() {
@@ -147,6 +189,12 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void addCurrentToDestinationPlaylist() {
+        String[] lAdd = new String[1];
+        lAdd[0] = gPlayer.track.uri;
+        gRestHandler.addToPlaylist(gActivity.getDestinationList().id, lAdd);
     }
 
     public void removeCurrentFromOriginList() {
