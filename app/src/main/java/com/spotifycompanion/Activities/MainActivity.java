@@ -162,13 +162,21 @@ public class MainActivity extends AppCompatActivity {
         try{
             Button lBt = findViewById(R.id.bt_logInOut);
             Log.e("UI", "Button clicked");
-            //Playlists lists = gManagementConnector.gRESTHandler.getUserPlaylists();
-            //Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[5].id);
+
+
 
             if(gManagementConnector.isAuthorized()) {
                 //logout
-                gManagementConnector.disallowAccess(this);
+                gManagementConnector.disallowAccess(this); //comment out if testing the examples
                 lBt.setText(R.string.drawer_logIn);
+
+//              EXAMPLE usage of the handler: getAllLists, getSpecificList, copyTrackToAnotherList and deleteTrackFromList
+//              Todo: Remove examples (if testing
+//              Playlists lists = gManagementConnector.gRESTHandler.getUserPlaylists();
+//              Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[5].id);
+//              list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[3].id);
+//              gManagementConnector.gRESTHandler.addToPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
+//              gManagementConnector.gRESTHandler.removeFromPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
             }else{
                 //login
                 gManagementConnector.authorizeAccess(this);
