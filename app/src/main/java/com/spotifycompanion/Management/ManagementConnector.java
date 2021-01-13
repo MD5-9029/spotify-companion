@@ -1,19 +1,29 @@
 package com.spotifycompanion.Management;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
+import com.spotifycompanion.R;
+
+import okhttp3.Response;
 
 /**
  * class containing and managing all components below view
  */
 public class ManagementConnector {
+    public final int AUTH_TOKEN_REQUEST_CODE = 0x10;
+    public final int AUTH_CODE_REQUEST_CODE = 0x11;
+
     private Activity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
     private DataParser gDataParser;
-    private RESTHandler gRESTHandler;
+    public RESTHandler gRESTHandler;
     private boolean authorized = false;
 
     /**
@@ -25,6 +35,7 @@ public class ManagementConnector {
         gActivity = pActivity;
         gDatabaseHandler = new DatabaseHandler(pActivity);
         gRemote = new RemoteHandler(pActivity);
+        gRESTHandler = new RESTHandler();
     }
 
     public void initialize() {
@@ -59,7 +70,60 @@ public class ManagementConnector {
         gDatabaseHandler.removeAllSkipped();
     }
 
+    /**
+     * Attempts to authorize application access
+     * @param contextActivity
+     */
+    public void authorizeAccess(Activity contextActivity) {
+        this.gRESTHandler.requestToken(contextActivity);
+    }
+
+    /**
+     * Clears Cookies and forces re-login
+     * @param contextActivity
+     */
+    public void disallowAccess(Activity contextActivity) {
+        gRESTHandler.cancelCall();
+        AuthorizationClient.clearCookies(contextActivity);
+        authorized = false;
+    }
+
+    /**
+     * Callback from the attempt to authorize application access
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return true if access was authorized
+     */
+    public boolean authorizeCallback(int requestCode, int resultCode, Intent data) {
+        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+        if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
+            gRESTHandler.mAccessToken = response.getAccessToken();
+            return authorized = true;
+        } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
+            gRESTHandler.mAccessCode = response.getCode();
+        }
+        return false;
+    }
+
+    /**
+     * Callback from the attempt to receive an auth code from the API
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return true if code was received
+     */
+    public boolean authCodeCallback(int requestCode, int resultCode, Intent data) {
+        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+        if (AUTH_CODE_REQUEST_CODE == requestCode) {
+            gRESTHandler.mAccessCode = response.getCode();
+            return true;
+        }
+        return false;
+    }
     public boolean isAuthorized() {
         return authorized;
     }
+
+
 }
