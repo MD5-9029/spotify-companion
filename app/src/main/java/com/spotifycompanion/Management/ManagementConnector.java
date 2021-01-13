@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
-import androidx.annotation.Nullable;
+import com.spotifycompanion.Activities.MainActivity;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -31,10 +31,10 @@ public class ManagementConnector {
      *
      * @param pActivity context from MainActivity
      */
-    public ManagementConnector(@Nullable Activity pActivity) {
+    public ManagementConnector(MainActivity pActivity) {
         gActivity = pActivity;
         gDatabaseHandler = new DatabaseHandler(pActivity);
-        gRemote = new RemoteHandler(pActivity);
+        gRemote = new RemoteHandler(pActivity, gDatabaseHandler);
         gRESTHandler = new RESTHandler();
     }
 
@@ -54,7 +54,7 @@ public class ManagementConnector {
         gRemote.disconnect();
     }
 
-    public void likeCurrentTrack(View view) {
+    public void likeCurrentTrack() {
         gRemote.like();
     }
 
@@ -62,12 +62,12 @@ public class ManagementConnector {
         gRemote.unlike();
     }
 
-    public void resumePlayback() {
-        gRemote.resume();
+    public void togglePlayback() {
+        gRemote.togglePlayback();
     }
 
-    public void clearSkipped(){
-        gDatabaseHandler.removeAllSkipped();
+    public void skipForward() {
+        gRemote.skipForward();
     }
 
     /**
@@ -125,5 +125,14 @@ public class ManagementConnector {
         return authorized;
     }
 
+
+    public void skipBackward() {
+        gRemote.skipBackward();
+    }
+
+
+    public void clearSkipped() {
+        gDatabaseHandler.removeAllSkipped();
+    }
 
 }

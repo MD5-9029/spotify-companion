@@ -18,10 +18,10 @@
     <string name="bt_clearCredentials">Clear WebView Credentials</string>
 
     <!-- app-content strings -->
-    <string name="main_resume">Resume</string>
+    <string name="main_middleButton">Play/Pause</string>
     <string name="main_auth">Do Not Follow The White Rabbit</string>
-    <string name="main_dislike">Dislike</string>
-    <string name="main_like">Like</string>
+    <string name="main_rightButton">Skip</string>
+    <string name="main_leftButton">Return</string>
 
     <!-- drawer -->
     <string name="drawer_settings">Settings</string>

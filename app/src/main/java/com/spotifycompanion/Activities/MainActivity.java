@@ -1,6 +1,7 @@
 package com.spotifycompanion.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -8,6 +9,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,15 +42,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
-    Button btBottomLeft, btBottomRight, btLogInOut, btBottomMiddle;
-    Toolbar tbTop;
-    DrawerLayout dlLeft;
+    Toolbar gToolbarTop;
+    DrawerLayout gDrawerLayout;
+    ImageView gImageView;
+    Switch gDeleteFromList, gDeleteFromLiked;
+    SharedPreferences gPreferences;
+    SharedPreferences.Editor gEditor;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         getAllByID();
+
+        gPreferences = getSharedPreferences("spotifyCompanion", MODE_PRIVATE);
+        gEditor = getSharedPreferences("spotifyCompanion", MODE_PRIVATE).edit();
+
+        gDrawerLayout.openDrawer(Gravity.LEFT);
+        gDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
     @Override
@@ -68,36 +82,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAllByID() {
-        tbTop = findViewById(R.id.toolbar);
+        gToolbarTop = findViewById(R.id.tb_top);
 
-        setSupportActionBar(tbTop);
-        dlLeft = findViewById(R.id.main_view);
+        setSupportActionBar(gToolbarTop);
+        gDrawerLayout = findViewById(R.id.main_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, dlLeft, tbTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        dlLeft.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, gDrawerLayout, gToolbarTop, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                gDeleteFromList = findViewById(R.id.sw_rmList);
+                gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+
+                gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
+                gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+
+                gDeleteFromList = findViewById(R.id.sw_rmList);
+                gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+
+                gEditor.putBoolean("list", gDeleteFromList.isChecked());
+                gEditor.putBoolean("liked", gDeleteFromLiked.isChecked());
+                gEditor.apply();
+
+            }
+        };
+        gDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+
+        gImageView = findViewById(R.id.iv_mainCover);
+
     }
 
 
     @Override
     public void onBackPressed() {
-        if (dlLeft.isDrawerOpen(Gravity.LEFT)) {
-            dlLeft.closeDrawer(Gravity.LEFT);
+        if (gDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            gDrawerLayout.closeDrawer(Gravity.LEFT);
         } else {
             super.onBackPressed();
         }
     }
 
-    public void resume(View v) {
-        gManagementConnector.resumePlayback();
+    public void togglePlayback(View v) {
+        gManagementConnector.togglePlayback();
     }
 
-    public void like(View view) {
-        gManagementConnector.likeCurrentTrack(view);
+    public ImageView getCoverView() {
+        return gImageView;
     }
 
-    public void unLike(View view) {
-        gManagementConnector.unlikeCurrentTrack();
+    public boolean deleteFromLiked() {
+        return gPreferences.getBoolean("liked", false);
+    }
+
+    public boolean deleteFromList() {
+        return gPreferences.getBoolean("list", true);
+    }
+
+    public void skipForward(View view) {
+        gManagementConnector.skipForward();
+    }
+
+    public void skipBackward(View view) {
+        gManagementConnector.skipBackward();
     }
 
     public void clearSkipped(View view) {
@@ -106,19 +159,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void rest(View view) {
-        Button lBt = findViewById(R.id.bt_logInOut);
-        Log.e("UI", "Button clicked");
-        //Playlists lists = gManagementConnector.gRESTHandler.getUserPlaylists();
-        //Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[3].id);
+        try{
+            Button lBt = findViewById(R.id.bt_logInOut);
+            Log.e("UI", "Button clicked");
+            //Playlists lists = gManagementConnector.gRESTHandler.getUserPlaylists();
+            //Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[3].id);
 
-        if(gManagementConnector.isAuthorized()) {
-            //logout
-            gManagementConnector.disallowAccess(this);
-            lBt.setText(R.string.drawer_logIn);
-        }else{
-            //login
-            gManagementConnector.authorizeAccess(this);
-            //lBt.setText(R.string.drawer_logOut); //button text change on successful login (onActivityResult)
+            if(gManagementConnector.isAuthorized()) {
+                //logout
+                gManagementConnector.disallowAccess(this);
+                lBt.setText(R.string.drawer_logIn);
+            }else{
+                //login
+                gManagementConnector.authorizeAccess(this);
+                //lBt.setText(R.string.drawer_logOut); //button text change on successful login (onActivityResult)
+            }
+        } catch (Exception e){
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT);
         }
     }
 

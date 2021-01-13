@@ -1,8 +1,6 @@
 package com.spotifycompanion.Management;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,6 +9,7 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
+import com.spotifycompanion.Activities.MainActivity;
 
 /**
  * remote handler manages interaction (requests) with the main app.
@@ -20,12 +19,20 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-    private Activity gActivity;
+    private static final int gSkippedLimit = 3;
+
+    private MainActivity gActivity;
     private SpotifyAppRemote gSpotifyAppRemote;
     private PlayerState gPlayer;
+    private DatabaseHandler gDatabase;
 
-    public RemoteHandler(Activity pActivity) {
+    //required for removal from list
+    private RESTHandler gRestHandler;
+
+
+    public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase) {
         gActivity = pActivity;
+        gDatabase = pDatabase;
     }
 
     /**
@@ -51,29 +58,87 @@ public class RemoteHandler {
     }
 
     private void subscribeToStates() {
-        gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
-            gPlayer = playerState;
-        });
+        try {
+            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
+                gPlayer = playerState;
+                updateImage();
+            });
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void updateImage() {
+        try {
+            gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
+                gActivity.getCoverView().setImageBitmap(bitmap);
+            });
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
 
     }
 
-
-    public void resume() {
+    public void togglePlayback() {
         try {
-            gSpotifyAppRemote.getPlayerApi().resume();
-        } catch (java.lang.Exception e) {
+            if (gPlayer.isPaused) {
+                gSpotifyAppRemote.getPlayerApi().resume();
+            } else {
+                gSpotifyAppRemote.getPlayerApi().pause();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void skipForward() {
+        try {
+            String lUri = gPlayer.track.uri;
+            gDatabase.addSkipped(lUri);
+            if (gDatabase.getSkipped(lUri) >= gSkippedLimit) {
+                if (gActivity.deleteFromLiked()) {
+                    unlike();
+                }
+                if (gActivity.deleteFromList()) {
+                    removeFromList();
+                }
+            }
+            gSpotifyAppRemote.getPlayerApi().skipNext();
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void skipBackward() {
+        try {
+            gSpotifyAppRemote.getPlayerApi().skipPrevious();
+        } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
     public void like() {
-        Track lTrack = gPlayer.track;
-        gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+        try {
+            Track lTrack = gPlayer.track;
+            gSpotifyAppRemote.getUserApi().addToLibrary(lTrack.uri);
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void unlike() {
-        Track lTrack = gPlayer.track;
-        gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+        try {
+            Track lTrack = gPlayer.track;
+            gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public void removeFromList() {
+
     }
 }
 

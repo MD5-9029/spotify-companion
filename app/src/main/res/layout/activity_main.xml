@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/tb_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
@@ -26,47 +26,47 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/btn_bottonLeft"
+                android:id="@+id/bt_bottonLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                android:onClick="like"
-                android:text="@string/main_like"
+                android:onClick="skipBackward"
+                android:text="@string/main_leftButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
-                android:id="@+id/btn_bottomRight"
+                android:id="@+id/bt_bottomRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:onClick="unLike"
-                android:text="@string/main_dislike"
+                android:onClick="skipForward"
+                android:text="@string/main_rightButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <Button
-                android:id="@+id/btn_bottomMiddle"
+                android:id="@+id/bt_bottomMiddle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:onClick="resume"
-                android:text="@string/main_resume"
+                android:onClick="togglePlayback"
+                android:text="@string/main_middleButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/iv_mainCover"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="100dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="220dp"
-                app:layout_constraintBottom_toTopOf="@+id/btn_bottonLeft"
+                app:layout_constraintBottom_toTopOf="@+id/bt_bottonLeft"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
