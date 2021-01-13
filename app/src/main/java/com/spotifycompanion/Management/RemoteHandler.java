@@ -86,8 +86,13 @@ public class RemoteHandler {
     }
 
     public void setTime() {
-        gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
-        gPreviousTrackUri = gPlayer.track.uri;
+        //Todo: ive caught a nullpointer exception when the user closes the sidepanel immediately after opening it
+        try {
+            gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
+            gPreviousTrackUri = gPlayer.track.uri;
+        } catch (Exception e) {
+            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void updateImage() {
