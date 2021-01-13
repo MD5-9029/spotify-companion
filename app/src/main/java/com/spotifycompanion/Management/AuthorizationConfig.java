@@ -49,7 +49,15 @@ public class AuthorizationConfig {
     public final int AUTH_CODE_REQUEST_CODE = 0x11;
 
     public AuthorizationConfig() {
-        this.scope = "playlist-modify-private user-read-recently-played user-read-playback-state user-read-currently-playing user-read-email playlist-modify-public";
+        this.scope = String.join(" ",
+                "playlist-modify-private",
+                "playlist-modify-public",
+                "user-library-read",
+                "user-read-currently-playing",
+                "user-read-email",
+                "user-read-playback-state",
+                "user-read-recently-played"
+        );
         this.show_dialog = false;
     }
 
