@@ -1,7 +1,5 @@
 package com.spotifycompanion.Management;
 
-import android.net.Uri;
-
 public class AuthorizationConfig {
     /**
      * The ID of the application given by Spotify
