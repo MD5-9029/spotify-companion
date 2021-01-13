@@ -8,11 +8,15 @@ import android.util.Log;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+import com.spotifycompanion.models.Playlist;
+import com.spotifycompanion.models.Playlists;
+import com.spotifycompanion.models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -24,13 +28,12 @@ public class RESTHandler {
 
     public final AuthorizationConfig authConfig = new AuthorizationConfig();
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken;
-    private String mAccessCode;
+    public String mAccessToken;
+    public String mAccessCode;
     private Call mCall;
 
     private Boolean isAuthorized = false;
-    private String accessToken = "";
-    private String refreshToken = "";
+    public String refreshToken = "";
 
     private final String APP_TOKEN = "spotify-companion-token";
 
@@ -78,42 +81,63 @@ public class RESTHandler {
         }
     }
 
-    public void getUserProfile() {
+    public JSONObject requestData(String route) {
+        JSONObject data = null;
         if (mAccessToken == null) {
-            return;
+            return null;
         }
-
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me")
+                .url(route)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
         cancelCall();
         mCall = mOkHttpClient.newCall(request);
-
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //setResponse("Failed to fetch data: " + e);
+        try {
+            Response response = mCall.execute();
+            try {
+                data = new JSONObject(Objects.requireNonNull(response.body()).string());
+            } catch (JSONException | IOException e) {
+                Log.e("response", "Cannot convert reply to JSON");
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    Log.e("callback", jsonObject.toString());
-                } catch (JSONException e) {
-                    //setResponse("Failed to parse data: " + e);
-                }
-            }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
+    public User getUserProfile() {
+        String route = "https://api.spotify.com/v1/me";
+        User user = null;
+        JSONObject data = requestData(route);
+        if(data != null) {
+            user = new User(data);
+        }
+        return user;
+    }
+    public Playlists getUserPlaylists(){
+        String route = "https://api.spotify.com/v1/me/playlists?limit=50";
+        Playlists playlists = null;
+        JSONObject data = requestData(route);
+        if(data != null) {
+            playlists = new Playlists(data);
+        }
+        return playlists;
+    }
 
-    public Boolean authorizeUser(){
-        String request_url = "https://accounts.spotify.com/authorize?client_id=5fe01282e44241328a84e7c5cc169165&response_type=code&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&state=34fFs29kd09";
+    public Playlist getPlaylist(String playlist_id) {
+        String route = String.format("https://api.spotify.com/v1/playlists/%s", playlist_id);
+        Playlist playlist = null;
+        JSONObject data = requestData(route);
+        if(data != null) {
+            playlist = new Playlist(data);
+        }
+        return playlist;
+    }
 
-        //Todo: send request and check response
+    public Boolean authorizeUser(Activity contextActivity){
+        this.requestToken(contextActivity);
 
         this.isAuthorized = true;
         return true;
@@ -122,8 +146,8 @@ public class RESTHandler {
     public Boolean getRefreshAndAccessToken() {
         if (!this.isAuthorized) return false;
 
-        this.accessToken = "";
-        this.refreshToken = "";
+        //this.accessToken = "";
+        //this.refreshToken = "";
         return true;
     }
 
