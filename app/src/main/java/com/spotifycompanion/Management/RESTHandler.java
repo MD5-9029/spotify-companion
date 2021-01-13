@@ -20,8 +20,11 @@ import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RESTHandler {
@@ -71,7 +74,7 @@ public class RESTHandler {
     /**
      * Utility function to send a GET request to the API
      * @param route the url for the request
-     * @return JSON data object
+     * @return JSON data response
      */
     public JSONObject requestData(String route) {
         JSONObject data = null;
@@ -81,6 +84,41 @@ public class RESTHandler {
         final Request request = new Request.Builder()
                 .url(route)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
+                .build();
+
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+        try {
+            Response response = mCall.execute();
+            try {
+                data = new JSONObject(Objects.requireNonNull(response.body()).string());
+            } catch (JSONException | IOException e) {
+                Log.e("response", "Cannot convert reply to JSON");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    /**
+     * Utility function to send a POST request to the API
+     * @param route the url for the request
+     * @param postData the post data in JSON type
+     * @return JSON data response
+     */
+    public JSONObject postData(String route, JSONObject postData) {
+        JSONObject data = null;
+        if (mAccessToken == null) {
+            return null;
+        }
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), postData.toString());
+
+        final Request request = new Request.Builder()
+                .url(route)
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .post(body)
                 .build();
 
         cancelCall();

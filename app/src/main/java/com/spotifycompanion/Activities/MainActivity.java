@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             Button lBt = findViewById(R.id.bt_logInOut);
             Log.e("UI", "Button clicked");
             //Playlists lists = gManagementConnector.gRESTHandler.getUserPlaylists();
-            //Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[3].id);
+            //Playlist list = gManagementConnector.gRESTHandler.getPlaylist(lists.items[5].id);
 
             if(gManagementConnector.isAuthorized()) {
                 //logout
