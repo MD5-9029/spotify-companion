@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
 
         gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
-        //gOrigin.setSelection(gPreferences.getInt("src", 0));
         gDestination.setSelection(gPreferences.getInt("dest", 0));
     }
 
