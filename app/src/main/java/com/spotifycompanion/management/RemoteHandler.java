@@ -17,6 +17,7 @@ import com.spotifycompanion.models.PlaylistTrack;
 
 import java.util.Arrays;
 import java.util.List;
+
 /**
  * remote handler manages interaction (requests) with the main app.
  * relays requests to spotify
@@ -56,21 +57,25 @@ public class RemoteHandler {
      * connect; links the companion to the official app via IPC
      */
     public void connect() {
-        SpotifyAppRemote.connect(gActivity,
-                new ConnectionParams.Builder(gClientID).setRedirectUri(gRedirectURI).showAuthView(true).build(),
-                new Connector.ConnectionListener() {
-                    public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
-                        gSpotifyAppRemote = pSpotifyAppRemote;
-                        subscribeToStates();
+        if (gSpotifyAppRemote.isSpotifyInstalled(gActivity)) {
+            SpotifyAppRemote.connect(gActivity,
+                    new ConnectionParams.Builder(gClientID).setRedirectUri(gRedirectURI).showAuthView(true).build(),
+                    new Connector.ConnectionListener() {
+                        public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
+                            gSpotifyAppRemote = pSpotifyAppRemote;
+                            subscribeToStates();
 
-                        //setup playback for convenient use
-                        gSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.ALL);
-                    }
+                            //setup playback for convenient use
+                            gSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.ALL);
+                        }
 
-                    public void onFailure(Throwable throwable) {
-                        Log.e("RemoteHandler", throwable.getMessage(), throwable);
-                    }
-                });
+                        public void onFailure(Throwable throwable) {
+                            Log.e("RemoteHandler", throwable.getMessage(), throwable);
+                        }
+                    });
+        } else {
+            Toast.makeText(gActivity, gActivity.getString(R.string.toast_rhInstalled), Toast.LENGTH_LONG);
+        }
     }
 
     /**
@@ -170,6 +175,7 @@ public class RemoteHandler {
 
     /**
      * set playlist
+     *
      * @param pUri playlist to play from
      */
     public void setPlaylist(String pUri) {
@@ -285,7 +291,7 @@ public class RemoteHandler {
 
     /**
      * @param pAddURi uri to check for in provided list
-     * @param pList list to check in
+     * @param pList   list to check in
      * @return true if track is contained in given list otherwise false
      */
     private boolean isInList(String pAddURi, Playlist pList) {
