@@ -4,35 +4,38 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1548</x>
-      <y>207</y>
+      <x>882</x>
+      <y>405</y>
       <w>279</w>
-      <h>171</h>
+      <h>261</h>
     </coordinates>
     <panel_attributes>RemoteHandler
 --
--zClientID: String
--zRedirectURI: String
--zSpotifyAppRemote: SpotifyAppRemote
--zPlayer: PlayerState
+_-SKIPPED_lIMIT: int_
+_-TOLERANCE: int__
 --
--subscribeToTrack(): void
 +connect(pActivity: MainActivity): void
 +disconnect(): void
 +playCurrent(): void
 +addCurrentToLibrary(): void
-+removeCurrentFromLibrary(): void</panel_attributes>
++removeCurrentFromLibrary(): void
++togglePlayback(): void
++getPlaylistUri(): String
++setPlaylist(String): void
++skipForward(): void
++skipBackward(): void
++getPlaylists(): List&lt;Playlist&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>324</x>
-      <y>117</y>
+      <x>0</x>
+      <y>126</y>
       <w>252</w>
       <h>225</h>
     </coordinates>
-    <panel_attributes>Activities
+    <panel_attributes>activities
 --
 bg=orange</panel_attributes>
     <additional_attributes/>
@@ -40,12 +43,12 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>1179</x>
-      <y>117</y>
+      <x>855</x>
+      <y>126</y>
       <w>657</w>
       <h>576</h>
     </coordinates>
-    <panel_attributes>Management
+    <panel_attributes>management
 --
 bg=orange</panel_attributes>
     <additional_attributes/>
@@ -53,25 +56,39 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1638</x>
-      <y>396</y>
-      <w>189</w>
+      <x>1215</x>
+      <y>216</y>
+      <w>216</w>
       <h>171</h>
     </coordinates>
     <panel_attributes>DatabaseHandler
 --
-</panel_attributes>
+_-gDatabase: String_
+_-gTable: String_
+_-gColumnURI: String_
+--
++onCreate(SQLiteDatabase): void
++onUpgrade(SQLiteDatabase): void
++addSkipped(String): void
++getSkipped(String): int
++removeOneSkipped(String): void
++removeAllSkipped(): void
++removeAllSkipped(String): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1422</x>
-      <y>396</y>
-      <w>189</w>
+      <x>1206</x>
+      <y>414</y>
+      <w>243</w>
       <h>171</h>
     </coordinates>
-    <panel_attributes>DataParser
+    <panel_attributes>AuthorizationConfig
+--
+_-AUTH_TOKEN_REQUEST_CODE: int_
+_-AUTH_CODE_REQUEST_CODE: int_
+_-REDIRECT_URI: String_
 --
 </panel_attributes>
     <additional_attributes/>
@@ -79,8 +96,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>360</x>
-      <y>198</y>
+      <x>36</x>
+      <y>207</y>
       <w>90</w>
       <h>27</h>
     </coordinates>
@@ -90,45 +107,35 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1206</x>
-      <y>207</y>
+      <x>882</x>
+      <y>216</y>
       <w>297</w>
       <h>171</h>
     </coordinates>
     <panel_attributes>ManagementConnector
 --
--zRemoteHandler: RemoteHandler
--zDatabaseHandler: DatabaseHandler
--zDataParser: DataParser
+_-AUTH_TOKEN_REQUEST_CODE: int_
+_-AUTH_CODE_REQUEST_CODE: int_
 --
-+ManagementConnector(Context: pContext): ctor
 +connectRemote(pActivity: MainActivity): void
-+disconnectRemot(): void
-+getRemote(): RemoteHandler</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1206</x>
-      <y>396</y>
-      <w>189</w>
-      <h>171</h>
-    </coordinates>
-    <panel_attributes>RESTHandler
---
-</panel_attributes>
++disconnectRemote(): void
++togglePlayback(): void
++skipForward(): void
++skipBackward(): void
++authorizeAccess(): void
++disallowAccess(): void
++clearSkipped(): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>657</x>
-      <y>117</y>
+      <x>333</x>
+      <y>126</y>
       <w>441</w>
       <h>576</h>
     </coordinates>
-    <panel_attributes>DataClasses
+    <panel_attributes>models
 --
 bg=orange</panel_attributes>
     <additional_attributes/>
@@ -136,8 +143,8 @@ bg=orange</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>684</x>
-      <y>216</y>
+      <x>360</x>
+      <y>225</y>
       <w>207</w>
       <h>162</h>
     </coordinates>
@@ -147,6 +154,19 @@ bg=orange</panel_attributes>
 +name: String
 +imageUri: ImageUri
 +duration: long</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1206</x>
+      <y>621</y>
+      <w>189</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>RESTHandler
+--
+</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
