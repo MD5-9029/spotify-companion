@@ -1,4 +1,4 @@
-package com.spotifycompanion.Management;
+package com.spotifycompanion.management;
 
 
 import android.util.Log;
@@ -10,7 +10,7 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Repeat;
 import com.spotify.protocol.types.Track;
-import com.spotifycompanion.Activities.MainActivity;
+import com.spotifycompanion.activities.MainActivity;
 
 /**
  * remote handler manages interaction (requests) with the main app.

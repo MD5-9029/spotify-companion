@@ -1,4 +1,4 @@
-package com.spotifycompanion.Management;
+package com.spotifycompanion.management;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,8 +7,7 @@ import android.widget.Spinner;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
-import com.spotifycompanion.Activities.MainActivity;
-import com.spotifycompanion.R;
+import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
 
 import java.util.Arrays;

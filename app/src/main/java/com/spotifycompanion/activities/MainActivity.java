@@ -1,4 +1,4 @@
-package com.spotifycompanion.Activities;
+package com.spotifycompanion.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,10 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.spotifycompanion.Management.ManagementConnector;
+import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.R;
 import com.spotifycompanion.models.Playlist;
-import com.spotifycompanion.models.SavedTracks;
 
 public class MainActivity extends AppCompatActivity {
 
