@@ -37,9 +37,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
     public void addSkipped(String pUri) {
         SQLiteDatabase lDb = this.getWritableDatabase();
-        //String lQuery = "INSERT INTO " + gTable + " (uri) VALUES (" + pUri + ")";
-        //lDb.rawQuery(lQuery, null);
-
         ContentValues lCV = new ContentValues();
         lCV.put(gColumnURI, pUri);
         long insert = lDb.insert(gTable, null, lCV);
@@ -72,6 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * removes a single entry with matching uri
+     *
      * @param pUri uri entry to remove
      */
     public void removeOneSkipped(String pUri) {
@@ -83,6 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * removes all entries with matching uri
+     *
      * @param pUri uri entries to remove
      */
 
