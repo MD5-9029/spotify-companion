@@ -120,14 +120,14 @@ public class Playlist {
     public Playlist(String name, PlaylistTrack[] pTracks) {
         this.collaborative = false;
         this.description = "";
-        this.href = null;
-        this.id = null;
+        this.href = "";
+        this.id = "";
         this.images = null;
         this.name = name;
         this.owner = null;
         this.is_public = false;
         this.tracks = pTracks;
-        this.uri = null;
+        this.uri = "";
     }
 
     public String toString(){
