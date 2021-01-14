@@ -1,4 +1,4 @@
-package com.spotifycompanion.Management;
+package com.spotifycompanion.management;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.spotifycompanion.Management;
+package com.spotifycompanion.management;
 
 
 import android.util.Log;
@@ -10,7 +10,12 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Repeat;
 import com.spotify.protocol.types.Track;
-import com.spotifycompanion.Activities.MainActivity;
+import com.spotifycompanion.activities.MainActivity;
+import com.spotifycompanion.models.Playlist;
+import com.spotifycompanion.models.PlaylistTrack;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * remote handler manages interaction (requests) with the main app.
@@ -30,7 +35,8 @@ public class RemoteHandler {
     private DatabaseHandler gDatabase;
     private RESTHandler gRestHandler;
     private long gTime;
-    private String gPreviousTrackUri;
+    private String gPreviousTrackUri, gplayListUri;
+    private List<Playlist> gPlaylists;
 
 
     public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
@@ -78,6 +84,9 @@ public class RemoteHandler {
                 updateImage();
                 setTime();
             });
+            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
+                gplayListUri = playerContext.uri;
+            });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
@@ -93,6 +102,10 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public String getPlaylistUri() {
+        return gplayListUri;
     }
 
     private void updateImage() {
@@ -198,13 +211,46 @@ public class RemoteHandler {
     public void addCurrentToDestinationPlaylist() {
         String[] lAdd = new String[1];
         lAdd[0] = gPreviousTrackUri;
-        gRestHandler.addToPlaylist(gActivity.getDestinationList().id, lAdd);
+        if (!isInList(lAdd[0], gActivity.getDestinationList())) {
+            gRestHandler.addToPlaylist(gActivity.getDestinationList().id, lAdd);
+        }
+    }
+
+    private boolean isInList(String pAddURi, Playlist pList) {
+        try {
+
+            for (PlaylistTrack current : gRestHandler.getPlaylist(pList.id).tracks) {
+                if (current.track.uri.equals(pAddURi)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(this.getClass().toString(), e.toString());
+        }
+        return false;
+    }
+
+    private String getPlaylistID() throws Exception {
+        String lPlaylistUri = getPlaylistUri();
+        int i = 0;
+        for (Playlist list : gPlaylists) {
+            if (list.uri.equals(lPlaylistUri)) {
+                return list.id;
+            }
+            i++;
+        }
+        throw new Exception();
     }
 
     public void removeCurrentFromOriginList() {
         String[] lRemove = new String[1];
         lRemove[0] = gPlayer.track.uri;
         gRestHandler.removeFromPlaylist(gActivity.getOriginList().id, lRemove);
+    }
+
+    public List<Playlist> getPlaylists() {
+        gPlaylists = Arrays.asList(gRestHandler.getUserPlaylists().items);
+        return gPlaylists;
     }
 }
 

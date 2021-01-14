@@ -1,4 +1,4 @@
-package com.spotifycompanion.Management;
+package com.spotifycompanion.management;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,11 +7,9 @@ import android.widget.Spinner;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
-import com.spotifycompanion.Activities.MainActivity;
-import com.spotifycompanion.R;
+import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,9 +23,9 @@ public class ManagementConnector {
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
-    private DataParser gDataParser;
     public RESTHandler gRESTHandler;
-    private boolean authorized = false;
+    private boolean gAuthorized = false;
+    private List<Playlist> gPlayLists;
 
     /**
      * constructor for management
@@ -69,6 +67,21 @@ public class ManagementConnector {
         gRemote.setPlaylist(pUri);
     }
 
+    /***
+     * @return position the current playlist has in spinner or 0 if not found
+     */
+    public int getPlaylistPosition(){
+         String lPlaylistUri = gRemote.getPlaylistUri();
+         int i = 0;
+        for (Playlist list: gPlayLists) {
+            if(list.uri.equals(lPlaylistUri)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
+    }
+
     /**
      * Attempts to authorize application access
      */
@@ -84,7 +97,7 @@ public class ManagementConnector {
     public void disallowAccess(Activity contextActivity) {
         gRESTHandler.cancelCall();
         AuthorizationClient.clearCookies(contextActivity);
-        authorized = false;
+        gAuthorized = false;
     }
 
     /**
@@ -100,7 +113,7 @@ public class ManagementConnector {
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessToken = response.getAccessToken();
             gRESTHandler.mExpiresIn = response.getExpiresIn();
-            return authorized = true;
+            return gAuthorized = true;
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessCode = response.getCode();
         }
@@ -124,8 +137,8 @@ public class ManagementConnector {
         return false;
     }
 
-    public boolean isAuthorized() {
-        return authorized;
+    public boolean isgAuthorized() {
+        return gAuthorized;
     }
 
     public void skipBackward() {
@@ -142,16 +155,18 @@ public class ManagementConnector {
      * @param pDestination spinner the list of playlists should be displayed in
      */
     public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
-        List<Playlist> lLists = Arrays.asList(gRESTHandler.getUserPlaylists().items);
+        gPlayLists = gRemote.getPlaylists();
 
-        lLists.sort(new Comparator<Playlist>() {
+        gPlayLists.sort(new Comparator<Playlist>() {
             @Override
             public int compare(Playlist o1, Playlist o2) {
                 return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
             }
         });
 
-        ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, lLists);
+        //gPlayLists.add(0, gRESTHandler.getSavedTracks());
+
+        ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, gPlayLists);
         lAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         pOrigin.setAdapter(lAdapter);
