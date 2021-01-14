@@ -25,7 +25,6 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-
     private static final int SKIPPED_LIMIT = 3;
     //time tolerance for noticing a skip event
     private static final long TOLERANCE = 3000;
@@ -42,7 +41,11 @@ public class RemoteHandler {
     private List<Playlist> gPlaylists;
     boolean gAvoidSkip = false;
 
-
+    /**
+     * @param pActivity context to display toast and such
+     * @param pDatabase database holding skipped statistics
+     * @param pREST     interface for requesting WEB-API content
+     */
     public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
         gActivity = pActivity;
         gDatabase = pDatabase;
@@ -70,15 +73,20 @@ public class RemoteHandler {
                 });
     }
 
+    /**
+     * disconnect remote controlling the spotify application
+     */
     public void disconnect() {
         SpotifyAppRemote.disconnect(gSpotifyAppRemote);
     }
 
+    /**
+     * set callbacks for statechanges
+     */
     private void subscribeToStates() {
         try {
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
-
                 if (!gAvoidSkip && !gPlayer.track.uri.equals(gPreviousTrackUri) && gTime > System.currentTimeMillis()) {
                     remove();
                 } else if (!gPlayer.track.uri.equals(gPreviousTrackUri) && gTime < System.currentTimeMillis()) {
@@ -88,16 +96,19 @@ public class RemoteHandler {
                 updateImage();
                 setTime();
             });
+
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
                 gPlaylistUri = playerContext.uri;
             });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
-
-
     }
 
+    /**
+     * set time the track is supposed to end at
+     * used for recognising skips
+     */
     private void setTime() {
         //Todo: ive caught a nullpointer exception when the user closes the sidepanel immediately after opening it
         try {
@@ -108,10 +119,16 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * @return uri to current playlist
+     */
     public String getPlaylistUri() {
         return gPlaylistUri;
     }
 
+    /**
+     * set image view to cover-image of current track
+     */
     private void updateImage() {
         try {
             gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
@@ -120,9 +137,11 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
-
     }
 
+    /**
+     * play and pause toggle
+     */
     public void togglePlayback() {
         try {
             if (gPlayer.isPaused) {
@@ -139,30 +158,35 @@ public class RemoteHandler {
     /***
      * set avoidSkip flag to true
      */
-    private void lock(){
+    private void lock() {
         gAvoidSkip = true;
     }
 
     /**
      * set avoidSkip flag to false
      */
-    private void unlock(){
+    private void unlock() {
         gAvoidSkip = false;
     }
 
+    /**
+     * set playlist
+     * @param pUri playlist to play from
+     */
     public void setPlaylist(String pUri) {
         try {
             lock();
             gSpotifyAppRemote.getPlayerApi().play(pUri);
-
         } catch (Exception e) {
-
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
         unlock();
         setTime();
     }
 
+    /**
+     * skip to net title in queue or list
+     */
     public void skipForward() {
         try {
             gSpotifyAppRemote.getPlayerApi().skipNext();
@@ -171,6 +195,10 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * called when a song was skipped
+     * checks if and what criteria for removal are met
+     */
     private void remove() {
         try {
             String lUri = gPreviousTrackUri;
@@ -188,6 +216,10 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * called when a song was not skipped
+     * will add song according to settings
+     */
     private void add() {
         try {
             String lUri = gPreviousTrackUri;
@@ -204,6 +236,9 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * retunr to prior track
+     */
     public void skipBackward() {
         try {
             lock();
@@ -215,6 +250,9 @@ public class RemoteHandler {
         setTime();
     }
 
+    /**
+     * method for likeing/adding a track to the users library
+     */
     public void addCurrentToLibrary() {
         try {
             gSpotifyAppRemote.getUserApi().addToLibrary(gPreviousTrackUri);
@@ -223,6 +261,9 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * method for disliking/unliking/removing a track from  the users library
+     */
     public void removeCurrentFromLibrary() {
         try {
             Track lTrack = gPlayer.track;
@@ -232,6 +273,9 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * adds the not skipped track to the designated playlist
+     */
     public void addCurrentToDestinationPlaylist() {
         String[] lAdd = new String[1];
         lAdd[0] = gPreviousTrackUri;
@@ -240,6 +284,11 @@ public class RemoteHandler {
         }
     }
 
+    /**
+     * @param pAddURi uri to check for in provided list
+     * @param pList list to check in
+     * @return true if track is contained in given list otherwise false
+     */
     private boolean isInList(String pAddURi, Playlist pList) {
         try {
             for (PlaylistTrack current : gRestHandler.getPlaylist(pList.id).tracks) {
@@ -253,24 +302,18 @@ public class RemoteHandler {
         return false;
     }
 
-    private String getPlaylistID() throws Exception {
-        String lPlaylistUri = getPlaylistUri();
-        int i = 0;
-        for (Playlist list : gPlaylists) {
-            if (list.uri.equals(lPlaylistUri)) {
-                return list.id;
-            }
-            i++;
-        }
-        throw new Exception();
-    }
-
+    /**
+     * remove skipped track from current playlist
+     */
     public void removeCurrentFromOriginList() {
         String[] lRemove = new String[1];
         lRemove[0] = gPlayer.track.uri;
         gRestHandler.removeFromPlaylist(gActivity.getOriginList().id, lRemove);
     }
 
+    /**
+     * @return list of playlist the user has access to
+     */
     public List<Playlist> getPlaylists() {
         gPlaylists = Arrays.asList(gRestHandler.getUserPlaylists().items);
         return gPlaylists;
