@@ -72,9 +72,6 @@ public class RemoteHandler {
 
     private void subscribeToStates() {
         try {
-            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
-                gplayListUri = playerContext.uri;
-            });
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
 
@@ -86,6 +83,9 @@ public class RemoteHandler {
 
                 updateImage();
                 setTime();
+            });
+            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
+                gplayListUri = playerContext.uri;
             });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
@@ -211,15 +211,15 @@ public class RemoteHandler {
     public void addCurrentToDestinationPlaylist() {
         String[] lAdd = new String[1];
         lAdd[0] = gPreviousTrackUri;
-        if (!isInList(lAdd[0], gActivity.getDestinationList().uri)) {
+        if (!isInList(lAdd[0], gActivity.getDestinationList())) {
             gRestHandler.addToPlaylist(gActivity.getDestinationList().id, lAdd);
         }
     }
 
-    private boolean isInList(String pAddURi, String pListUri) {
+    private boolean isInList(String pAddURi, Playlist pList) {
         try {
-            PlaylistTrack[] ltoCheck = gRestHandler.getPlaylist(getPlaylistID()).tracks;
-            for (PlaylistTrack current : ltoCheck) {
+
+            for (PlaylistTrack current : gRestHandler.getPlaylist(pList.id).tracks) {
                 if (current.track.uri.equals(pAddURi)) {
                     return true;
                 }
