@@ -117,13 +117,13 @@ public class Playlist {
         }
     }
 
-    public Playlist(PlaylistTrack[] pTracks) {
+    public Playlist(String name, PlaylistTrack[] pTracks) {
         this.collaborative = false;
-        this.description = "your favorite songs";
+        this.description = "";
         this.href = null;
         this.id = null;
         this.images = null;
-        this.name = "saved tracks";
+        this.name = name;
         this.owner = null;
         this.is_public = false;
         this.tracks = pTracks;

@@ -345,7 +345,7 @@ public class RESTHandler {
     public Playlist getSavedTracksAsPlaylist(){
         Playlist playlist = null;
         SavedTracks savedTracks = getSavedTracks();
-        playlist = new Playlist(savedTracks.items);
+        playlist = new Playlist("favorites", savedTracks.getPlaylistTracks());
         return playlist;
     }
 }
