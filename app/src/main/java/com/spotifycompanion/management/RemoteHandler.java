@@ -25,18 +25,22 @@ public class RemoteHandler {
     private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
     private static final String gRedirectURI = "spotifyCompanion://authCall";
 
-    private static final int SKIPPED_LIMIT = 3;
-    private static final long TOLERANCE = 3000;
 
+    private static final int SKIPPED_LIMIT = 3;
+    //time tolerance for noticing a skip event
+    private static final long TOLERANCE = 3000;
 
     private MainActivity gActivity;
     private SpotifyAppRemote gSpotifyAppRemote;
+
     private PlayerState gPlayer;
     private DatabaseHandler gDatabase;
     private RESTHandler gRestHandler;
+
     private long gTime;
-    private String gPreviousTrackUri, gplayListUri;
+    private String gPreviousTrackUri, gPlaylistUri;
     private List<Playlist> gPlaylists;
+    boolean gAvoidSkip = false;
 
 
     public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
@@ -75,7 +79,9 @@ public class RemoteHandler {
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
 
-                if (!gPlayer.track.uri.equals(gPreviousTrackUri) && gTime > System.currentTimeMillis()) {
+
+
+                if (!gAvoidSkip && !gPlayer.track.uri.equals(gPreviousTrackUri) && gTime > System.currentTimeMillis()) {
                     remove();
                 } else if (!gPlayer.track.uri.equals(gPreviousTrackUri) && gTime < System.currentTimeMillis()) {
                     add();
@@ -85,7 +91,7 @@ public class RemoteHandler {
                 setTime();
             });
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
-                gplayListUri = playerContext.uri;
+                gPlaylistUri = playerContext.uri;
             });
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
@@ -105,7 +111,7 @@ public class RemoteHandler {
     }
 
     public String getPlaylistUri() {
-        return gplayListUri;
+        return gPlaylistUri;
     }
 
     private void updateImage() {
