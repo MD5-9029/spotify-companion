@@ -318,5 +318,3 @@ public class RemoteHandler {
         return gPlaylists;
     }
 }
-
-
