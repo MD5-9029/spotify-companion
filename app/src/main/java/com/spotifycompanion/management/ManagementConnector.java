@@ -10,7 +10,6 @@ import com.spotify.sdk.android.auth.AuthorizationResponse;
 import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -72,7 +71,7 @@ public class ManagementConnector {
      * @return position the current playlist has in spinner or 0 if not found
      */
     public int getPlaylistPosition(){
-         String lPlaylistUri = gRemote.getPlaylist();
+         String lPlaylistUri = gRemote.getPlaylistUri();
          int i = 0;
         for (Playlist list: gPlayLists) {
             if(list.uri.equals(lPlaylistUri)){
@@ -156,7 +155,7 @@ public class ManagementConnector {
      * @param pDestination spinner the list of playlists should be displayed in
      */
     public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
-        gPlayLists = Arrays.asList(gRESTHandler.getUserPlaylists().items);
+        gPlayLists = gRemote.getPlaylists();
 
         gPlayLists.sort(new Comparator<Playlist>() {
             @Override
@@ -164,6 +163,8 @@ public class ManagementConnector {
                 return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
             }
         });
+
+        //gPlayLists.add(0, gRESTHandler.getSavedTracks());
 
         ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, gPlayLists);
         lAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
