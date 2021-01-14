@@ -102,11 +102,11 @@ public class ManagementConnector {
      */
     public boolean authorizeCallback(int requestCode, int resultCode, Intent data) {
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
+        if (gRESTHandler.authConfig.AUTH_TOKEN_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessToken = response.getAccessToken();
             gRESTHandler.mExpiresIn = response.getExpiresIn();
             return gAuthorized = true;
-        } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
+        } else if (gRESTHandler.authConfig.AUTH_CODE_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessCode = response.getCode();
         }
         return false;
@@ -122,7 +122,7 @@ public class ManagementConnector {
      */
     public boolean authCodeCallback(int requestCode, int resultCode, Intent data) {
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        if (AUTH_CODE_REQUEST_CODE == requestCode) {
+        if (gRESTHandler.authConfig.AUTH_CODE_REQUEST_CODE == requestCode) {
             gRESTHandler.mAccessCode = response.getCode();
             return true;
         }
