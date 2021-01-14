@@ -1,7 +1,5 @@
 package com.spotifycompanion.models;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +14,7 @@ public class Playlist {
      * Shared playlist.
      * true if the owner allows other users to modify the playlist.
      */
-    public boolean collaborative;
+    public Boolean collaborative;
     /**
      * The playlist description. Only returned for modified, verified playlists, otherwise null .
      */
@@ -84,27 +82,29 @@ public class Playlist {
     public Playlist(JSONObject data){
         this.images = null;
         try {
-            this.href = data.has("href") ? data.getString("href"):null;
-            this.id = data.has("id") ? data.getString("id"):null;
-            this.name = data.has("name") ? data.getString("name"):null;
-            this.is_public = data.has("is_public") ? data.getBoolean("is_public"):null;
-            this.uri = data.has("uri") ? data.getString("uri"):null;
+            this.href = ModelUtility.getString(data, "href");
+            this.id = ModelUtility.getString(data, "id");
+            this.name = ModelUtility.getString(data, "name");
+            this.is_public = ModelUtility.getBoolean(data, "public");
+            this.uri = ModelUtility.getString(data, "uri");
 
             //further processing
-            this.owner = data.has("owner") ? new User(data.getJSONObject("owner")):null;
+            this.owner = ModelUtility.exists(data,"owner") ? new User(data.getJSONObject("owner")):null;
 
-            JSONArray dataArray = data.getJSONArray("images");
-            this.images = new Image[dataArray.length()];
-            for(int i = 0; i < dataArray.length(); i++){
-                JSONObject imageData = dataArray.getJSONObject(i);
-                images[i] = new Image(imageData);
+            JSONArray dataArray = ModelUtility.getJSONArray(data, "images"); //data.getJSONArray("images");
+            if (dataArray != null){
+                this.images = new Image[dataArray.length()];
+                for(int i = 0; i < dataArray.length(); i++){
+                    JSONObject imageData = dataArray.getJSONObject(i);
+                    images[i] = new Image(imageData);
+                }
             }
 
             // get all user lists and get specific list uses same playlist class
             // but has a different "tracks" attribute (see PlaylistTracksSummary class), therefore gets ignored
             // -> {"href":String,"total":Integer}
-            JSONObject objTracks = data.getJSONObject("tracks");
-            if (objTracks.has("items")) {
+            JSONObject objTracks = ModelUtility.getJSONObject(data, "tracks");
+            if (objTracks != null && objTracks.has("items")) {
                 dataArray = objTracks.getJSONArray("items");
                 this.tracks = new PlaylistTrack[dataArray.length()];
                 for(int i = 0; i < dataArray.length(); i++){
@@ -115,6 +115,19 @@ public class Playlist {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public Playlist(PlaylistTrack[] pTracks) {
+        this.collaborative = false;
+        this.description = "your favorite songs";
+        this.href = null;
+        this.id = null;
+        this.images = null;
+        this.name = "saved tracks";
+        this.owner = null;
+        this.is_public = false;
+        this.tracks = pTracks;
+        this.uri = null;
     }
 
     public String toString(){
