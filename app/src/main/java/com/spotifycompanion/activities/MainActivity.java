@@ -21,7 +21,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.R;
 import com.spotifycompanion.models.Playlist;
-import com.spotifycompanion.models.SavedTracks;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         gPreferences = getSharedPreferences("spotifyCompanion", MODE_PRIVATE);
         gEditor = getSharedPreferences("spotifyCompanion", MODE_PRIVATE).edit();
-
-        gDrawerLayout.openDrawer(Gravity.LEFT);
-        gDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
     @Override
@@ -78,21 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                gDeleteFromList = findViewById(R.id.sw_rmList);
-                gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
-
-                gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
-                gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
-
-                gOrigin = findViewById(R.id.sp_srcList);
-                gDestination = findViewById(R.id.sp_dstList);
-                gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
-
-
-                gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
-                //gOrigin.setSelection(gPreferences.getInt("src", 0));
-                gDestination.setSelection(gPreferences.getInt("dest", 0));
-
+                setDrawerSettings();
             }
 
             @Override
@@ -142,12 +124,30 @@ public class MainActivity extends AppCompatActivity {
         return gPreferences.getBoolean("list", true);
     }
 
+    private void setDrawerSettings(){
+        gDeleteFromList = findViewById(R.id.sw_rmList);
+        gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+
+        gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
+        gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
+
+        gOrigin = findViewById(R.id.sp_srcList);
+        gDestination = findViewById(R.id.sp_dstList);
+        gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
+
+        gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
+        //gOrigin.setSelection(gPreferences.getInt("src", 0));
+        gDestination.setSelection(gPreferences.getInt("dest", 0));
+    }
+
     public Playlist getOriginList() {
+        setDrawerSettings();
         gOrigin = findViewById(R.id.sp_srcList);
         return (Playlist) gOrigin.getSelectedItem();
     }
 
     public Playlist getDestinationList(){
+        setDrawerSettings();
         gDestination = findViewById(R.id.sp_dstList);
         return  (Playlist) gDestination.getSelectedItem();
     }
