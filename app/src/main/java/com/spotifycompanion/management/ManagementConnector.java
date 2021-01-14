@@ -157,6 +157,7 @@ public class ManagementConnector {
     public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
         gPlayLists = gRemote.getPlaylists();
 
+
         gPlayLists.sort(new Comparator<Playlist>() {
             @Override
             public int compare(Playlist o1, Playlist o2) {
@@ -164,7 +165,9 @@ public class ManagementConnector {
             }
         });
 
-        //gPlayLists.add(0, gRESTHandler.getSavedTracks());
+        //crashes upon loading lists
+        //gPlayLists.add(gRESTHandler.getSavedTracksAsPlaylist());
+
 
         ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, gPlayLists);
         lAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
