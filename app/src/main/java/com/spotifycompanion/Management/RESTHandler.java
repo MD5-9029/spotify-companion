@@ -172,7 +172,7 @@ public class RESTHandler {
         return data;
     }
 
-    /**
+    /**D
      * Utility function to send a DELETE request to the API
      * @param route the url for the request
      * @param jsonString the post data in JSON type
@@ -342,5 +342,10 @@ public class RESTHandler {
         }
         return savedTracks;
     }
-
+    public Playlist getSavedTracksAsPlaylist(){
+        Playlist playlist = null;
+        SavedTracks savedTracks = getSavedTracks();
+        playlist = new Playlist(savedTracks.items);
+        return playlist;
+    }
 }
