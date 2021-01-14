@@ -21,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.R;
 import com.spotifycompanion.models.Playlist;
+import com.spotifycompanion.models.SavedTracks;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -187,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 //              gManagementConnector.gRESTHandler.addToPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
 //              gManagementConnector.gRESTHandler.removeFromPlaylist(lists.items[5].id, new String[]{list.tracks[0].track.uri});
 //              SavedTracks favorites = gManagementConnector.gRESTHandler.getSavedTracks();
+//              Playlist favourites_playlist = gManagementConnector.gRESTHandler.getSavedTracksAsPlaylist();
             } else {
                 //login
                 gManagementConnector.authorizeAccess();
