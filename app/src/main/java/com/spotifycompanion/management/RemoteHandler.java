@@ -23,9 +23,6 @@ import java.util.List;
  * relays requests to spotify
  */
 public class RemoteHandler {
-    private static final String gClientID = "4234dd4558284817abdb7c7ecc4d7df7";
-    private static final String gRedirectURI = "spotifyCompanion://authCall";
-
     private static final int SKIPPED_LIMIT = 3;
     //time tolerance for noticing a skip event
     private static final long TOLERANCE = 3000;
@@ -36,6 +33,7 @@ public class RemoteHandler {
     private PlayerState gPlayer;
     private DatabaseHandler gDatabase;
     private RESTHandler gRestHandler;
+    private AuthorizationConfig gAuth = new AuthorizationConfig();
 
     private long gTime;
     private String gPreviousTrackUri, gPlaylistUri;
@@ -59,7 +57,7 @@ public class RemoteHandler {
     public void connect() {
         if (gSpotifyAppRemote.isSpotifyInstalled(gActivity)) {
             SpotifyAppRemote.connect(gActivity,
-                    new ConnectionParams.Builder(gClientID).setRedirectUri(gRedirectURI).showAuthView(true).build(),
+                    new ConnectionParams.Builder(gAuth.CLIENT_ID).setRedirectUri(gAuth.REDIRECT_URI).showAuthView(true).build(),
                     new Connector.ConnectionListener() {
                         public void onConnected(SpotifyAppRemote pSpotifyAppRemote) {
                             gSpotifyAppRemote = pSpotifyAppRemote;
