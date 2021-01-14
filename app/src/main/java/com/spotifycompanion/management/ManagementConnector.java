@@ -17,7 +17,6 @@ import java.util.List;
  * class containing and managing all components below view
  */
 public class ManagementConnector {
-
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
@@ -27,7 +26,6 @@ public class ManagementConnector {
 
     /**
      * constructor for management
-     *
      * @param pActivity context from MainActivity
      */
     public ManagementConnector(MainActivity pActivity) {
@@ -53,18 +51,18 @@ public class ManagementConnector {
         gRemote.skipForward();
     }
 
-    public void setPlaylist(String pUri){
+    public void setPlaylist(String pUri) {
         gRemote.setPlaylist(pUri);
     }
 
     /***
      * @return position the current playlist has in spinner or 0 if not found
      */
-    public int getPlaylistPosition(){
-         String lPlaylistUri = gRemote.getPlaylistUri();
-         int i = 0;
-        for (Playlist list: gPlayLists) {
-            if(list.uri.equals(lPlaylistUri)){
+    public int getPlaylistPosition() {
+        String lPlaylistUri = gRemote.getPlaylistUri();
+        int i = 0;
+        for (Playlist list : gPlayLists) {
+            if (list.uri.equals(lPlaylistUri)) {
                 return i;
             }
             i++;
@@ -81,7 +79,6 @@ public class ManagementConnector {
 
     /**
      * Clears Cookies and forces re-login
-     *
      * @param contextActivity
      */
     public void disallowAccess(Activity contextActivity) {
@@ -92,7 +89,6 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to authorize application access
-     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -112,7 +108,6 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to receive an auth code from the API
-     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -139,25 +134,20 @@ public class ManagementConnector {
         gDatabaseHandler.removeAllSkipped();
     }
 
-    /***
+    /**
      * fill spinners with names of selectable playlists
      * @param pOrigin spinner the list of playlists should be displayed in
      * @param pDestination spinner the list of playlists should be displayed in
      */
     public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
+        //can NOT add library/saved tracks du to no uri being provided (neither api can access this data)
         gPlayLists = gRemote.getPlaylists();
-
-
         gPlayLists.sort(new Comparator<Playlist>() {
             @Override
             public int compare(Playlist o1, Playlist o2) {
                 return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
             }
         });
-
-        //crashes upon loading lists
-        //gPlayLists.add(gRESTHandler.getSavedTracksAsPlaylist());
-
 
         ArrayAdapter<Playlist> lAdapter = new ArrayAdapter(gActivity, android.R.layout.simple_spinner_item, gPlayLists);
         lAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
