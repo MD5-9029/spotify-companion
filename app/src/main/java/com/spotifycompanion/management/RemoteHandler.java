@@ -81,7 +81,7 @@ public class RemoteHandler {
     }
 
     /**
-     * set callbacks for statechanges
+     * set callbacks for state-changes
      */
     private void subscribeToStates() {
         try {
@@ -110,7 +110,6 @@ public class RemoteHandler {
      * used for recognising skips
      */
     private void setTime() {
-        //Todo: ive caught a nullpointer exception when the user closes the sidepanel immediately after opening it
         try {
             gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
             gPreviousTrackUri = gPlayer.track.uri;
