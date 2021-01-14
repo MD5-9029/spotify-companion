@@ -98,7 +98,7 @@ public class RemoteHandler {
 
     }
 
-    public void setTime() {
+    private void setTime() {
         //Todo: ive caught a nullpointer exception when the user closes the sidepanel immediately after opening it
         try {
             gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
@@ -171,13 +171,13 @@ public class RemoteHandler {
         }
     }
 
-    public void remove() {
+    private void remove() {
         try {
             String lUri = gPreviousTrackUri;
             gDatabase.addSkipped(lUri);
             if (gDatabase.getSkipped(lUri) >= SKIPPED_LIMIT) {
                 if (gActivity.deleteFromLiked()) {
-                    unlike();
+                    removeCurrentFromLibrary();
                 }
                 if (gActivity.deleteFromList()) {
                     removeCurrentFromOriginList();
@@ -188,13 +188,13 @@ public class RemoteHandler {
         }
     }
 
-    public void add() {
+    private void add() {
         try {
             String lUri = gPreviousTrackUri;
             gDatabase.removeAllSkipped(lUri);
 
             if (gActivity.deleteFromLiked()) {
-                like();
+                addCurrentToLibrary();
             }
             if (gActivity.deleteFromList()) {
                 addCurrentToDestinationPlaylist();
@@ -215,7 +215,7 @@ public class RemoteHandler {
         setTime();
     }
 
-    public void like() {
+    public void addCurrentToLibrary() {
         try {
             gSpotifyAppRemote.getUserApi().addToLibrary(gPreviousTrackUri);
         } catch (Exception e) {
@@ -223,7 +223,7 @@ public class RemoteHandler {
         }
     }
 
-    public void unlike() {
+    public void removeCurrentFromLibrary() {
         try {
             Track lTrack = gPlayer.track;
             gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
