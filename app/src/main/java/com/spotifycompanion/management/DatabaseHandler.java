@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String gDatabase = "companion.db";
     private static final String gTable = "skipped";
-    private static final String ColumnURI = "uri";
+    private static final String gColumnURI = "uri";
 
     public DatabaseHandler(@Nullable Context pContext) {
         super(pContext, gDatabase, null, 1);
@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase pDB) {
         String lCreateTableString = "CREATE TABLE skipped (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                ColumnURI + " STRING NOT NULL)";
+                gColumnURI + " STRING NOT NULL)";
         pDB.execSQL(lCreateTableString);
     }
 
@@ -41,7 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //lDb.rawQuery(lQuery, null);
 
         ContentValues lCV = new ContentValues();
-        lCV.put(ColumnURI, pUri);
+        lCV.put(gColumnURI, pUri);
         long insert = lDb.insert(gTable, null, lCV);
 
         Log.e("DH: test", "insert done");
