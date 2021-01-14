@@ -44,9 +44,7 @@
     <string name="toast_rhSkip">could not access remote</string>
     <string name="toast_rhRemove">error removing track</string>
     <string name="toast_rhAdd">error adding track</string>
-    <string name="toast_rh"></string>
+    <string name="toast_rhInstalled">YOU NEED SPOTIFY FOR THIS APP</string>
+    <string name="toast_rhPremium">this app may only work properly with premium</string>
 
-
-
-    gActivity.getString(R.string.toast_rh)
 </resources>
