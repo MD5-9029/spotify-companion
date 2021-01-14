@@ -17,6 +17,7 @@ import java.util.List;
  * class containing and managing all components below view
  */
 public class ManagementConnector {
+
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
