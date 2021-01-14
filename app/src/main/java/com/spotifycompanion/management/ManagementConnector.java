@@ -24,7 +24,6 @@ public class ManagementConnector {
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
-    private DataParser gDataParser;
     public RESTHandler gRESTHandler;
     private boolean authorized = false;
 
