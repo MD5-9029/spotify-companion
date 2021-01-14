@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class SavedTracks {
     public String href;
-    public Track[] items;
+    public PlaylistTrack[] items;
     //limit
     public String next;
     //offset
@@ -21,7 +21,7 @@ public class SavedTracks {
             this.href = data.has("href") && !data.isNull("href") ? data.getString("href") : null;
             this.total = data.has("total") && !data.isNull("total") ? data.getInt("total") : null;
             this.next = data.has("next") && !data.isNull("next") ? data.getString("next") : null;
-            this.items = new Track[total];
+            this.items = new PlaylistTrack[total];
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -35,11 +35,15 @@ public class SavedTracks {
     public void addTracks(JSONArray trackDataList, int offset) {
         try {
             for (int i = 0; i < trackDataList.length(); i++){
-                JSONObject trackData = trackDataList.getJSONObject(i).getJSONObject("track");
-                this.items[i+offset] = new Track(trackData);
+                JSONObject trackData = trackDataList.getJSONObject(i);
+                this.items[i+offset] = new PlaylistTrack(trackData);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public PlaylistTrack[] getPlaylistTracks() {
+        return items;
     }
 }
