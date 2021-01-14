@@ -69,7 +69,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * removes a single entry with matching uri
-     *
      * @param pUri uri entry to remove
      */
     public void removeOneSkipped(String pUri) {
@@ -81,7 +80,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * removes all entries with matching uri
-     *
      * @param pUri uri entries to remove
      */
 

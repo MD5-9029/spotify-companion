@@ -65,6 +65,7 @@ public class RemoteHandler {
 
                             //setup playback for convenient use
                             gSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.ALL);
+                            gSpotifyAppRemote.getPlayerApi().setShuffle(true);
                         }
 
                         public void onFailure(Throwable throwable) {
@@ -180,6 +181,7 @@ public class RemoteHandler {
         try {
             lock();
             gSpotifyAppRemote.getPlayerApi().play(pUri);
+            skipForward();
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlaylist), Toast.LENGTH_LONG).show();
         }
