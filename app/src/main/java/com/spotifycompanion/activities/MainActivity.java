@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Button lBt = findViewById(R.id.bt_logInOut);
-        if (requestCode == gManagementConnector.AUTH_TOKEN_REQUEST_CODE) {
+        if (requestCode == gManagementConnector.gRESTHandler.authConfig.AUTH_TOKEN_REQUEST_CODE) {
             boolean hasAccess = gManagementConnector.authorizeCallback(requestCode, resultCode, data);
             if (hasAccess) lBt.setText(R.string.drawer_logOut);
         }
