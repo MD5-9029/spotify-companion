@@ -10,13 +10,13 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Repeat;
 import com.spotify.protocol.types.Track;
+import com.spotifycompanion.R;
 import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
 import com.spotifycompanion.models.PlaylistTrack;
 
 import java.util.Arrays;
 import java.util.List;
-
 /**
  * remote handler manages interaction (requests) with the main app.
  * relays requests to spotify
@@ -101,7 +101,7 @@ public class RemoteHandler {
                 gPlaylistUri = playerContext.uri;
             });
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhStated), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -114,7 +114,7 @@ public class RemoteHandler {
             gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
             gPreviousTrackUri = gPlayer.track.uri;
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhTrackData), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -134,7 +134,7 @@ public class RemoteHandler {
                 gActivity.getCoverView().setImageBitmap(bitmap);
             });
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhImage), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -149,7 +149,7 @@ public class RemoteHandler {
                 gSpotifyAppRemote.getPlayerApi().pause();
             }
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlayback), Toast.LENGTH_LONG).show();
         }
         setTime();
     }
@@ -177,7 +177,7 @@ public class RemoteHandler {
             lock();
             gSpotifyAppRemote.getPlayerApi().play(pUri);
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlaylist), Toast.LENGTH_LONG).show();
         }
         unlock();
         setTime();
@@ -190,7 +190,7 @@ public class RemoteHandler {
         try {
             gSpotifyAppRemote.getPlayerApi().skipNext();
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhSkip), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -211,7 +211,7 @@ public class RemoteHandler {
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhRemove), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -231,7 +231,7 @@ public class RemoteHandler {
                 addCurrentToDestinationPlaylist();
             }
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhAdd), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -243,7 +243,7 @@ public class RemoteHandler {
             lock();
             gSpotifyAppRemote.getPlayerApi().skipPrevious();
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhSkip), Toast.LENGTH_LONG).show();
         }
         unlock();
         setTime();
@@ -256,7 +256,7 @@ public class RemoteHandler {
         try {
             gSpotifyAppRemote.getUserApi().addToLibrary(gPreviousTrackUri);
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhAdd), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -268,7 +268,7 @@ public class RemoteHandler {
             Track lTrack = gPlayer.track;
             gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhRemove), Toast.LENGTH_LONG).show();
         }
     }
 
