@@ -35,7 +35,7 @@ public class RemoteHandler {
     private RESTHandler gRestHandler;
     private AuthorizationConfig gAuth = new AuthorizationConfig();
 
-    private long gTime;
+    private long gTime = System.nanoTime() + TOLERANCE;
     private String gPreviousTrackUri, gPlaylistUri;
     private List<Playlist> gPlaylists;
     boolean gAvoidSkip = false;
