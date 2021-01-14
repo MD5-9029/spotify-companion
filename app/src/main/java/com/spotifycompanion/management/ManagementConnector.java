@@ -17,8 +17,8 @@ import java.util.List;
  * class containing and managing all components below view
  */
 public class ManagementConnector {
-    private final int AUTH_TOKEN_REQUEST_CODE = 0x10;
-    private final int AUTH_CODE_REQUEST_CODE = 0x11;
+    public final int AUTH_TOKEN_REQUEST_CODE = 0x10;
+    public final int AUTH_CODE_REQUEST_CODE = 0x11;
 
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
