@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
                 gDestination = findViewById(R.id.sp_dstList);
                 gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
 
-                gOrigin.setSelection(gPreferences.getInt("src", 0));
+
+                gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
+                //gOrigin.setSelection(gPreferences.getInt("src", 0));
                 gDestination.setSelection(gPreferences.getInt("dest", 0));
 
             }
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("UI", "Button clicked");
 
 
-            if (gManagementConnector.isAuthorized()) {
+            if (gManagementConnector.isgAuthorized()) {
                 //logout
                 gManagementConnector.disallowAccess(this); //comment out if testing the examples
                 lBt.setText(R.string.drawer_logIn);

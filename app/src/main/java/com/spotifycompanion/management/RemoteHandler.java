@@ -30,7 +30,7 @@ public class RemoteHandler {
     private DatabaseHandler gDatabase;
     private RESTHandler gRestHandler;
     private long gTime;
-    private String gPreviousTrackUri;
+    private String gPreviousTrackUri, gPlayerContext;
 
 
     public RemoteHandler(MainActivity pActivity, DatabaseHandler pDatabase, RESTHandler pREST) {
@@ -66,6 +66,9 @@ public class RemoteHandler {
 
     private void subscribeToStates() {
         try {
+            gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
+                gPlayerContext = playerContext.uri;
+            });
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerState().setEventCallback(playerState -> {
                 gPlayer = playerState;
 
@@ -93,6 +96,10 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public String getPlaylist(){
+        return gPlayerContext;
     }
 
     private void updateImage() {
