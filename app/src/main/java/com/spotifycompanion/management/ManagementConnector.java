@@ -79,11 +79,10 @@ public class ManagementConnector {
 
     /**
      * Clears Cookies and forces re-login
-     * @param contextActivity
      */
-    public void disallowAccess(Activity contextActivity) {
+    public void disallowAccess() {
         gRESTHandler.cancelCall();
-        AuthorizationClient.clearCookies(contextActivity);
+        AuthorizationClient.clearCookies(gActivity);
         gAuthorized = false;
     }
 
