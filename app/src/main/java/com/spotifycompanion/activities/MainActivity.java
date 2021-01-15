@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.R;
+import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.models.Playlist;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,8 +60,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        gManagementConnector.disconnectRemote();
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        gManagementConnector.disconnectRemote();
+        gManagementConnector.disallowAccess();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (gDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            gDrawerLayout.closeDrawer(Gravity.LEFT);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void getAllByID() {
@@ -102,16 +117,6 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (gDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            gDrawerLayout.closeDrawer(Gravity.LEFT);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     public ImageView getCoverView() {
         return gImageView;
     }
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         return gPreferences.getBoolean("list", true);
     }
 
-    private void setDrawerSettings(){
+    private void setDrawerSettings() {
         gDeleteFromList = findViewById(R.id.sw_rmList);
         gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
 
@@ -145,10 +150,10 @@ public class MainActivity extends AppCompatActivity {
         return (Playlist) gOrigin.getSelectedItem();
     }
 
-    public Playlist getDestinationList(){
+    public Playlist getDestinationList() {
         setDrawerSettings();
         gDestination = findViewById(R.id.sp_dstList);
-        return  (Playlist) gDestination.getSelectedItem();
+        return (Playlist) gDestination.getSelectedItem();
     }
 
     public void skipForward(View view) {
@@ -176,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (gManagementConnector.isgAuthorized()) {
                 //logout
-                gManagementConnector.disallowAccess(this); //comment out if testing the examples
+                gManagementConnector.disallowAccess(); //comment out if testing the examples
                 lBt.setText(R.string.drawer_logIn);
 
 //              EXAMPLE usage of the handler: getAllLists, getSpecificList, copyTrackToAnotherList and deleteTrackFromList
