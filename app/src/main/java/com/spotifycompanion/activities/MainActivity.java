@@ -28,10 +28,11 @@ import com.spotifycompanion.models.Playlist;
 
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
+    private static final String ADD_LIST = "addList", ADD_LIKED = "addLiked", REMOVE_LIST = "removeList", REMOVE_LIKED = "removeLiked", ORIGIN = "origin", DESTINATION = "destination";
     Toolbar gToolbarTop;
     DrawerLayout gDrawerLayout;
     ImageView gImageView;
-    Switch gDeleteFromList, gDeleteFromLiked;
+    Switch gDeleteFromList, gDeleteFromLiked, gAddToList, gAddToLiked;
     Spinner gOrigin, gDestination;
 
     SharedPreferences gPreferences;
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         startNotification();
     }
 
-    private void startNotification(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private void startNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), "name", NotificationManager.IMPORTANCE_DEFAULT);
 
             NotificationManager lManager = getSystemService(NotificationManager.class);
@@ -111,18 +112,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-
                 gDeleteFromList = findViewById(R.id.sw_rmList);
                 gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+                gAddToList = findViewById(R.id.sw_addList);
+                gAddToLiked = findViewById(R.id.sw_addLiked);
 
-                gEditor.putBoolean("list", gDeleteFromList.isChecked());
-                gEditor.putBoolean("liked", gDeleteFromLiked.isChecked());
+                gEditor.putBoolean(REMOVE_LIST, gDeleteFromList.isChecked());
+                gEditor.putBoolean(REMOVE_LIKED, gDeleteFromLiked.isChecked());
+                gEditor.putBoolean(ADD_LIST, gAddToList.isChecked());
+                gEditor.putBoolean(ADD_LIKED, gAddToLiked.isChecked());
 
                 gOrigin = findViewById(R.id.sp_srcList);
                 gDestination = findViewById(R.id.sp_dstList);
 
-                gEditor.putInt("src", gOrigin.getSelectedItemPosition());
-                gEditor.putInt("dest", gDestination.getSelectedItemPosition());
+                gEditor.putInt(ORIGIN, gOrigin.getSelectedItemPosition());
+                gEditor.putInt(DESTINATION, gDestination.getSelectedItemPosition());
 
                 gEditor.apply();
 
@@ -149,27 +153,39 @@ public class MainActivity extends AppCompatActivity {
         return findViewById(R.id.tw_trackSkips);
     }
 
-    public boolean deleteFromLiked() {
-        return gPreferences.getBoolean("liked", false);
+    public boolean getDeleteFromLikedValue() {
+        return gPreferences.getBoolean(REMOVE_LIKED, false);
     }
 
-    public boolean deleteFromList() {
-        return gPreferences.getBoolean("list", true);
+    public boolean getDeleteFromListValue() {
+        return gPreferences.getBoolean(REMOVE_LIST, true);
+    }
+
+    public boolean getAddToLikedValues() {
+        return gPreferences.getBoolean(ADD_LIKED, true);
+    }
+
+    public boolean getAddToListValues() {
+        return gPreferences.getBoolean(ADD_LIST, true);
     }
 
     private void setDrawerSettings() {
         gDeleteFromList = findViewById(R.id.sw_rmList);
         gDeleteFromLiked = findViewById(R.id.sw_rmLiked);
+        gAddToList = findViewById(R.id.sw_addList);
+        gAddToLiked = findViewById(R.id.sw_addLiked);
 
-        gDeleteFromLiked.setChecked(gPreferences.getBoolean("liked", false));
-        gDeleteFromList.setChecked(gPreferences.getBoolean("list", true));
+        gDeleteFromLiked.setChecked(gPreferences.getBoolean(REMOVE_LIKED, false));
+        gDeleteFromList.setChecked(gPreferences.getBoolean(REMOVE_LIST, true));
+        gAddToLiked.setChecked(gPreferences.getBoolean(ADD_LIKED, false));
+        gAddToList.setChecked(gPreferences.getBoolean(ADD_LIST, true));
 
         gOrigin = findViewById(R.id.sp_srcList);
         gDestination = findViewById(R.id.sp_dstList);
         gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
 
         gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
-        gDestination.setSelection(gPreferences.getInt("dest", 0));
+        gDestination.setSelection(gPreferences.getInt(DESTINATION, 0));
     }
 
     public Playlist getOriginList() {

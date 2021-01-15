@@ -221,10 +221,10 @@ public class RemoteHandler {
             String lUri = gPreviousTrackUri;
             gDatabase.addSkipped(lUri);
             if (gDatabase.getSkipped(lUri) >= SKIPPED_LIMIT) {
-                if (gActivity.deleteFromLiked()) {
+                if (gActivity.getDeleteFromLikedValue()) {
                     removeCurrentFromLibrary();
                 }
-                if (gActivity.deleteFromList()) {
+                if (gActivity.getDeleteFromListValue()) {
                     removeCurrentFromOriginList();
                 }
                 gDatabase.removeAllSkipped(lUri);
@@ -243,10 +243,10 @@ public class RemoteHandler {
             String lUri = gPreviousTrackUri;
             gDatabase.removeAllSkipped(lUri);
 
-            if (gActivity.deleteFromLiked()) {
+            if (gActivity.getDeleteFromLikedValue()) {
                 addCurrentToLibrary();
             }
-            if (gActivity.deleteFromList()) {
+            if (gActivity.getDeleteFromListValue()) {
                 addCurrentToDestinationPlaylist();
             }
         } catch (Exception e) {
