@@ -36,9 +36,8 @@
     <string name="drawer_originList">Origin List</string>
 
     <!-- toasts -->
-    <string name="toast_rhStated">error registering callbacks for stateupdates</string>
+    <string name="toast_rhStated">error registering callbacks for state-updates</string>
     <string name="toast_rhTrackData">problem loading track-data</string>
-    <string name="toast_rhImage">could not access image</string>
     <string name="toast_rhPlayback">error in requesting playback state change</string>
     <string name="toast_rhPlaylist">could not play the given data</string>
     <string name="toast_rhSkip">could not access remote</string>
