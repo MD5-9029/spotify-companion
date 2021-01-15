@@ -243,10 +243,10 @@ public class RemoteHandler {
             String lUri = gPreviousTrackUri;
             gDatabase.removeAllSkipped(lUri);
 
-            if (gActivity.getDeleteFromLikedValue()) {
+            if (gActivity.getAddToLikedValues()) {
                 addCurrentToLibrary();
             }
-            if (gActivity.getDeleteFromListValue()) {
+            if (gActivity.getAddToListValues()) {
                 addCurrentToDestinationPlaylist();
             }
         } catch (Exception e) {
