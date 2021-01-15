@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), "name", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), getString(R.string.notification_name), NotificationManager.IMPORTANCE_DEFAULT);
 
             NotificationManager lManager = getSystemService(NotificationManager.class);
             lManager.createNotificationChannel(lChannel);
@@ -130,7 +130,11 @@ public class MainActivity extends AppCompatActivity {
 
                 gEditor.apply();
 
-                gManagementConnector.setPlaylist(((Playlist) gOrigin.getSelectedItem()).uri);
+                try {
+                    gManagementConnector.setPlaylist(((Playlist) gOrigin.getSelectedItem()).uri);
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, getString(R.string.toast_rhAdd), Toast.LENGTH_LONG).show();
+                }
             }
         };
         gDrawerLayout.addDrawerListener(toggle);
