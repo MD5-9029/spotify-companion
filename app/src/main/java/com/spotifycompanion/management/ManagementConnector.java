@@ -1,12 +1,19 @@
 package com.spotifycompanion.management;
 
-import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+import com.spotifycompanion.R;
 import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
 
@@ -16,7 +23,7 @@ import java.util.List;
 /**
  * class containing and managing all components below view
  */
-public class ManagementConnector {
+public class ManagementConnector extends Service {
     private MainActivity gActivity;
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
@@ -26,6 +33,7 @@ public class ManagementConnector {
 
     /**
      * constructor for management
+     *
      * @param pActivity context from MainActivity
      */
     public ManagementConnector(MainActivity pActivity) {
@@ -88,6 +96,7 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to authorize application access
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -107,6 +116,7 @@ public class ManagementConnector {
 
     /**
      * Callback from the attempt to receive an auth code from the API
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -135,7 +145,8 @@ public class ManagementConnector {
 
     /**
      * fill spinners with names of selectable playlists
-     * @param pOrigin spinner the list of playlists should be displayed in
+     *
+     * @param pOrigin      spinner the list of playlists should be displayed in
      * @param pDestination spinner the list of playlists should be displayed in
      */
     public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
@@ -155,4 +166,27 @@ public class ManagementConnector {
         pDestination.setAdapter(lAdapter);
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //return super.onStartCommand(intent, flags, startId);
+
+        Intent lIntent = new Intent(this, MainActivity.class);
+        PendingIntent lPendingIntent = PendingIntent.getActivity(this, 0, lIntent, 0);
+
+        Notification lNotification = new NotificationCompat.Builder(this, getString(R.string.notification_channelID)).
+                setContentTitle(getString(R.string.notification_title)).
+                setContentText(Integer.toString(gRemote.getCurrentSkipps())).
+                setSmallIcon(R.drawable.ic_launcher_background).
+                setContentIntent(lPendingIntent).
+                build();
+
+        startForeground(1, lNotification);
+        return START_REDELIVER_INTENT;
+    }
 }

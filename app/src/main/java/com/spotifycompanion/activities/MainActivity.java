@@ -1,7 +1,10 @@
 package com.spotifycompanion.activities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -24,8 +27,6 @@ import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.models.Playlist;
 
 public class MainActivity extends AppCompatActivity {
-
-
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
     Toolbar gToolbarTop;
     DrawerLayout gDrawerLayout;
@@ -45,6 +46,20 @@ public class MainActivity extends AppCompatActivity {
 
         gPreferences = getSharedPreferences("spotifyCompanion", MODE_PRIVATE);
         gEditor = getSharedPreferences("spotifyCompanion", MODE_PRIVATE).edit();
+
+        startNotification();
+    }
+
+    private void startNotification(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), "name", NotificationManager.IMPORTANCE_DEFAULT);
+
+            NotificationManager lManager = getSystemService(NotificationManager.class);
+            lManager.createNotificationChannel(lChannel);
+
+            Intent lIntent = new Intent(this, ManagementConnector.class);
+            startService(lIntent);
+        }
     }
 
     @Override

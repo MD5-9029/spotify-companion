@@ -193,6 +193,14 @@ public class RemoteHandler {
         setTime();
     }
 
+    public String getCurrentTrackUri(){
+        return gPlayer.track.uri;
+    }
+
+    public int getCurrentSkipps(){
+        return gDatabase.getSkipped(getCurrentTrackUri());
+    }
+
     /**
      * skip to net title in queue or list
      */

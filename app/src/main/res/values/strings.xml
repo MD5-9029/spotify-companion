@@ -17,6 +17,11 @@
     <string name="bt_reqToken">Request Token</string>
     <string name="bt_clearCredentials">Clear WebView Credentials</string>
 
+    <!-- notification -->
+    <string name="notification_channelID">test</string>
+    <string name="notification_title">test</string>
+
+
     <!-- app-content strings -->
     <string name="main_middleButton">Play/Pause</string>
     <string name="main_auth">Do Not Follow The White Rabbit</string>
