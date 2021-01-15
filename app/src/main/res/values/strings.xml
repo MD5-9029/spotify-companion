@@ -50,5 +50,6 @@
     <string name="toast_rhAdd">error adding track</string>
     <string name="toast_rhInstalled">YOU NEED SPOTIFY FOR THIS APP</string>
     <string name="toast_rhPremium">this app may only work properly with premium</string>
+    <string name="main_imageViewDescription">coverImage</string>
 
 </resources>
