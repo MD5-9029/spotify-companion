@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -119,6 +120,18 @@ public class MainActivity extends AppCompatActivity {
 
     public ImageView getCoverView() {
         return gImageView;
+    }
+
+    public TextView getNameView() {
+        return findViewById(R.id.tw_trackTitle);
+    }
+
+    public TextView getArtistView() {
+        return findViewById(R.id.tw_trackArtist);
+    }
+
+    public TextView getSkipView() {
+        return findViewById(R.id.tw_trackSkips);
     }
 
     public boolean deleteFromLiked() {

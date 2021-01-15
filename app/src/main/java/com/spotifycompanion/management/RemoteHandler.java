@@ -97,7 +97,7 @@ public class RemoteHandler {
                     add();
                 }
 
-                updateImage();
+                updateTrackData();
                 setTime();
             });
 
@@ -132,13 +132,17 @@ public class RemoteHandler {
     /**
      * set image view to cover-image of current track
      */
-    private void updateImage() {
+    private void updateTrackData() {
         try {
             gSpotifyAppRemote.getImagesApi().getImage(gPlayer.track.imageUri).setResultCallback(bitmap -> {
                 gActivity.getCoverView().setImageBitmap(bitmap);
             });
+            gActivity.getNameView().setText(gPlayer.track.name);
+            gActivity.getArtistView().setText(gPlayer.track.artist.name);
+            gActivity.getSkipView().setText(Integer.toString(gDatabase.getSkipped(gPlayer.track.uri)));
+
         } catch (Exception e) {
-            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhImage), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhTrackData), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -215,6 +219,7 @@ public class RemoteHandler {
                 if (gActivity.deleteFromList()) {
                     removeCurrentFromOriginList();
                 }
+                gDatabase.removeAllSkipped(lUri);
             }
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhRemove), Toast.LENGTH_LONG).show();
