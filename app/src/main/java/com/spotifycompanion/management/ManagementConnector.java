@@ -182,7 +182,7 @@ public class ManagementConnector extends Service {
         Notification lNotification = new NotificationCompat.Builder(this, getString(R.string.notification_channelID)).
                 setContentTitle(getString(R.string.notification_title)).
                 setContentText(Integer.toString(gRemote.getCurrentSkipps())).
-                setSmallIcon(R.drawable.ic_launcher_background).
+                setSmallIcon(R.mipmap.ic_launcher).
                 setContentIntent(lPendingIntent).
                 build();
 
