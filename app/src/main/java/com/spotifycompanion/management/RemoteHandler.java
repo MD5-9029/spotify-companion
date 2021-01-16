@@ -361,11 +361,9 @@ public class RemoteHandler {
         try {
             if (!gPlayer.isPaused) {
                 gPlaybackPosition = gPlaybackPosition + 1000;
-                int lReturn = (gPlaybackPosition * 100 / gPlaybackDuration);
-                return lReturn;
-            } else {
-                return gPlaybackPosition;
             }
+            int lReturn = (gPlaybackPosition * 100 / gPlaybackDuration);
+            return lReturn;
         } catch (Exception e) {
             //wait till value is set
             return 0;
