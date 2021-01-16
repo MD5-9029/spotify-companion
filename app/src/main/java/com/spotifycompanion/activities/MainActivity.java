@@ -25,6 +25,9 @@ import com.spotifycompanion.R;
 import com.spotifycompanion.management.ManagementConnector;
 import com.spotifycompanion.models.Playlist;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity {
     private final ManagementConnector gManagementConnector = new ManagementConnector(MainActivity.this);
     private static final String ADD_LIST = "addList", ADD_LIKED = "addLiked", REMOVE_LIST = "removeList", REMOVE_LIKED = "removeLiked", ORIGIN = "origin", DESTINATION = "destination";
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences gPreferences;
     SharedPreferences.Editor gEditor;
-
+    Timer gTimer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         gEditor = getSharedPreferences("spotifyCompanion", MODE_PRIVATE).edit();
 
         startNotification();
+        setTimerProgressbar();
     }
 
     private void startNotification() {
@@ -92,6 +96,26 @@ public class MainActivity extends AppCompatActivity {
             gDrawerLayout.closeDrawer(Gravity.LEFT);
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    private void setTimerProgressbar() {
+        gTimer = new Timer();
+        TimerTask lTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    gManagementConnector.setProgressbarProgress(gManagementConnector.getPlaybackPosition());
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG);
+                }
+            }
+        };
+        try {
+            gTimer.schedule(lTask, 0, 1000);
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG);
         }
     }
 
@@ -152,9 +176,11 @@ public class MainActivity extends AppCompatActivity {
         return findViewById(R.id.tw_trackArtist);
     }
 
-    public ManagementConnector getManagementConnector(){return gManagementConnector;}
+    public ManagementConnector getManagementConnector() {
+        return gManagementConnector;
+    }
 
-    public void setSkips(int pSkips){
+    public void setSkips(int pSkips) {
         gManagementConnector.setStrikes(pSkips);
     }
 

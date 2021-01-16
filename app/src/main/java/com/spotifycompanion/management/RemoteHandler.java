@@ -38,7 +38,8 @@ public class RemoteHandler {
     private long gTime = System.nanoTime() + TOLERANCE;
     private String gPreviousTrackUri, gPlaylistUri;
     private List<Playlist> gPlaylists;
-    boolean gAvoidSkip = false;
+    private boolean gAvoidSkip = false;
+    private int gPlaybackPosition = 0, gPlaybackDuration = 1;
 
     /**
      * @param pActivity context to display toast and such
@@ -98,7 +99,7 @@ public class RemoteHandler {
                 }
 
                 updateTrackData();
-                setTime();
+                setEndingTime();
             });
 
             gSpotifyAppRemote.getPlayerApi().subscribeToPlayerContext().setEventCallback(playerContext -> {
@@ -113,13 +114,19 @@ public class RemoteHandler {
      * set time the track is supposed to end at
      * used for recognising skips
      */
-    private void setTime() {
+    private void setEndingTime() {
         try {
             gTime = System.currentTimeMillis() + gPlayer.track.duration - gPlayer.playbackPosition - TOLERANCE;
+            updatePosition();
             gPreviousTrackUri = gPlayer.track.uri;
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhTrackData), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void updatePosition() {
+        gPlaybackPosition = (int) gPlayer.playbackPosition;
+        gPlaybackDuration = (int) gPlayer.track.duration;
     }
 
     /**
@@ -140,7 +147,8 @@ public class RemoteHandler {
             gActivity.getNameView().setText(gPlayer.track.name);
             gActivity.getArtistView().setText(gPlayer.track.artist.name);
             gActivity.setSkips(gDatabase.getSkipped(gPlayer.track.uri));
-            gActivity.getManagementConnector().setProgressbarProgress((int)(gPlayer.playbackPosition*100/gPlayer.track.duration));
+            gActivity.getManagementConnector().setProgressbarProgress((int) (gPlayer.playbackPosition * 100 / gPlayer.track.duration));
+            updatePosition();
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhTrackData), Toast.LENGTH_LONG).show();
         }
@@ -148,6 +156,7 @@ public class RemoteHandler {
 
     /**
      * play and pause toggle
+     *
      * @return true if playing, false if paused
      */
     public Boolean togglePlayback() {
@@ -162,7 +171,7 @@ public class RemoteHandler {
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlayback), Toast.LENGTH_LONG).show();
         }
-        setTime();
+        setEndingTime();
         updateTrackData();
         return false;
     }
@@ -195,14 +204,14 @@ public class RemoteHandler {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlaylist), Toast.LENGTH_LONG).show();
         }
         unlock();
-        setTime();
+        setEndingTime();
     }
 
-    public String getCurrentTrackUri(){
+    public String getCurrentTrackUri() {
         return gPlayer.track.uri;
     }
 
-    public int getCurrentSkips(){
+    public int getCurrentSkips() {
         return gDatabase.getSkipped(getCurrentTrackUri());
     }
 
@@ -271,7 +280,7 @@ public class RemoteHandler {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhSkip), Toast.LENGTH_LONG).show();
         }
         unlock();
-        setTime();
+        setEndingTime();
     }
 
     /**
@@ -341,5 +350,25 @@ public class RemoteHandler {
     public List<Playlist> getPlaylists() {
         gPlaylists = Arrays.asList(gRestHandler.getUserPlaylists().items);
         return gPlaylists;
+    }
+
+    /**
+     * only called by timer, otherwise displayed time will deviate form the actual
+     *
+     * @return the position in track 0 to 100%
+     */
+    public int getPlaybackPosition() {
+        try {
+            if (!gPlayer.isPaused) {
+                gPlaybackPosition = gPlaybackPosition + 1000;
+                int lReturn = (gPlaybackPosition * 100 / gPlaybackDuration);
+                return lReturn;
+            } else {
+                return gPlaybackPosition;
+            }
+        } catch (Exception e) {
+            //wait till value is set
+            return 0;
+        }
     }
 }

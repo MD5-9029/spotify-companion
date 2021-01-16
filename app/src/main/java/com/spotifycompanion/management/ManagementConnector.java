@@ -74,6 +74,10 @@ public class ManagementConnector extends Service {
         gRemote.setPlaylist(pUri);
     }
 
+    public int getPlaybackPosition(){
+        return gRemote.getPlaybackPosition();
+    }
+
     /***
      * @return position the current playlist has in spinner or 0 if not found
      */
@@ -221,6 +225,7 @@ public class ManagementConnector extends Service {
                 setContentTitle(getString(R.string.notification_title)).
                 setContentText(Integer.toString(gRemote.getCurrentSkips())).
                 setSmallIcon(R.mipmap.ic_launcher).
+                setSmallIcon(R.drawable.drawable_skip). //
                 setContentIntent(lPendingIntent).
                 build();
 
