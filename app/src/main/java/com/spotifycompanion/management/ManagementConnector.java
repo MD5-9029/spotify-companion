@@ -4,12 +4,17 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.IBinder;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -28,7 +33,7 @@ public class ManagementConnector extends Service {
     private DatabaseHandler gDatabaseHandler;
     private RemoteHandler gRemote;
     public RESTHandler gRESTHandler;
-    private boolean gAuthorized = false;
+    private boolean lAuthorized = false;
     private List<Playlist> gPlayLists;
 
     /**
@@ -52,7 +57,13 @@ public class ManagementConnector extends Service {
     }
 
     public void togglePlayback() {
-        gRemote.togglePlayback();
+        boolean is_playing = gRemote.togglePlayback();
+        ImageButton playBtn = gActivity.findViewById(R.id.bt_bottomMiddle);
+        if (is_playing) {
+            playBtn.setImageResource(R.drawable.ic_pause_solid);    //show pause
+        } else {
+            playBtn.setImageResource(R.drawable.ic_play_solid);     //show play
+        }
     }
 
     public void skipForward() {
@@ -91,7 +102,7 @@ public class ManagementConnector extends Service {
     public void disallowAccess() {
         gRESTHandler.cancelCall();
         AuthorizationClient.clearCookies(gActivity);
-        gAuthorized = false;
+        lAuthorized = false;
     }
 
     /**
@@ -105,11 +116,11 @@ public class ManagementConnector extends Service {
     public boolean authorizeCallback(int requestCode, int resultCode, Intent data) {
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
         if (gRESTHandler.authConfig.AUTH_TOKEN_REQUEST_CODE == requestCode) {
-            gRESTHandler.mAccessToken = response.getAccessToken();
-            gRESTHandler.mExpiresIn = response.getExpiresIn();
-            return gAuthorized = true;
+            gRESTHandler.gAccessToken = response.getAccessToken();
+            gRESTHandler.gExpiresIn = response.getExpiresIn();
+            return lAuthorized = true;
         } else if (gRESTHandler.authConfig.AUTH_CODE_REQUEST_CODE == requestCode) {
-            gRESTHandler.mAccessCode = response.getCode();
+            gRESTHandler.gAccessCode = response.getCode();
         }
         return false;
     }
@@ -125,14 +136,14 @@ public class ManagementConnector extends Service {
     public boolean authCodeCallback(int requestCode, int resultCode, Intent data) {
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
         if (gRESTHandler.authConfig.AUTH_CODE_REQUEST_CODE == requestCode) {
-            gRESTHandler.mAccessCode = response.getCode();
+            gRESTHandler.gAccessCode = response.getCode();
             return true;
         }
         return false;
     }
 
-    public boolean isgAuthorized() {
-        return gAuthorized;
+    public boolean islAuthorized() {
+        return lAuthorized;
     }
 
     public void skipBackward() {
@@ -141,6 +152,33 @@ public class ManagementConnector extends Service {
 
     public void clearSkipped() {
         gDatabaseHandler.removeAllSkipped();
+    }
+
+    /**
+     * Sets the red UI strikes in the main window
+     * @param strikes_int number of red strikes, the rest will be gray
+     */
+    public void setStrikes(int strikes_int) {
+        ImageView strike1 = gActivity.findViewById(R.id.strike1);
+        ImageView strike2 = gActivity.findViewById(R.id.strike2);
+        ImageView strike3 = gActivity.findViewById(R.id.strike3);
+        ImageView[] strikes = new ImageView[]{strike1, strike2, strike3};
+        for (int i = 0; i < strikes.length; i++) {
+            if (i < strikes_int) {
+                strikes[i].setImageTintList(ColorStateList.valueOf(gActivity.getColor(R.color.red_200)));
+            } else {
+                strikes[i].setImageTintList(ColorStateList.valueOf(gActivity.getColor(R.color.gray_500)));
+            }
+        }
+    }
+
+    /**
+     * Sets the progress bar progress
+     * @param percentage integer between 0 and 100
+     */
+    public void setProgressbarProgress(int percentage) {
+        ProgressBar pbar = gActivity.findViewById(R.id.progressBar);
+        pbar.setProgress(percentage);
     }
 
     /**
