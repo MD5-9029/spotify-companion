@@ -4,7 +4,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -52,15 +51,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), getString(R.string.notification_name), NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel lChannel = new NotificationChannel(getString(R.string.notification_channelID), getString(R.string.notification_name), NotificationManager.IMPORTANCE_DEFAULT);
 
-            NotificationManager lManager = getSystemService(NotificationManager.class);
-            lManager.createNotificationChannel(lChannel);
+        NotificationManager lManager = getSystemService(NotificationManager.class);
+        lManager.createNotificationChannel(lChannel);
 
-            Intent lIntent = new Intent(this, ManagementConnector.class);
-            startService(lIntent);
-        }
+        Intent lIntent = new Intent(this, ManagementConnector.class);
+        startService(lIntent);
     }
 
     @Override
@@ -155,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
         return findViewById(R.id.tw_trackArtist);
     }
 
-    public TextView getSkipView() {
-        return findViewById(R.id.tw_trackSkips);
+    public ManagementConnector getManagementConnector(){return gManagementConnector;}
+
+    public void setSkips(int pSkips){
+        gManagementConnector.setStrikes(pSkips);
     }
 
     public boolean getDeleteFromLikedValue() {

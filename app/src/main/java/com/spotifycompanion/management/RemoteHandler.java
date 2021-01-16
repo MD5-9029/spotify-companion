@@ -139,8 +139,8 @@ public class RemoteHandler {
             });
             gActivity.getNameView().setText(gPlayer.track.name);
             gActivity.getArtistView().setText(gPlayer.track.artist.name);
-            gActivity.getSkipView().setText(Integer.toString(gDatabase.getSkipped(gPlayer.track.uri)));
-
+            gActivity.setSkips(gDatabase.getSkipped(gPlayer.track.uri));
+            gActivity.getManagementConnector().setProgressbarProgress((int)(gPlayer.playbackPosition*100/gPlayer.track.duration));
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhTrackData), Toast.LENGTH_LONG).show();
         }
@@ -163,6 +163,7 @@ public class RemoteHandler {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlayback), Toast.LENGTH_LONG).show();
         }
         setTime();
+        updateTrackData();
         return false;
     }
 
@@ -201,7 +202,7 @@ public class RemoteHandler {
         return gPlayer.track.uri;
     }
 
-    public int getCurrentSkipps(){
+    public int getCurrentSkips(){
         return gDatabase.getSkipped(getCurrentTrackUri());
     }
 
@@ -211,6 +212,7 @@ public class RemoteHandler {
     public void skipForward() {
         try {
             gSpotifyAppRemote.getPlayerApi().skipNext();
+            updateTrackData();
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhSkip), Toast.LENGTH_LONG).show();
         }
@@ -259,7 +261,7 @@ public class RemoteHandler {
     }
 
     /**
-     * retunr to prior track
+     * return to prior track
      */
     public void skipBackward() {
         try {
