@@ -14,7 +14,6 @@ import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -220,7 +219,7 @@ public class ManagementConnector extends Service {
 
         Notification lNotification = new NotificationCompat.Builder(this, getString(R.string.notification_channelID)).
                 setContentTitle(getString(R.string.notification_title)).
-                setContentText(Integer.toString(gRemote.getCurrentSkipps())).
+                setContentText(Integer.toString(gRemote.getCurrentSkips())).
                 setSmallIcon(R.mipmap.ic_launcher).
                 setContentIntent(lPendingIntent).
                 build();
