@@ -18,8 +18,10 @@
     <string name="bt_clearCredentials">Clear WebView Credentials</string>
 
     <!-- notification -->
-    <string name="notification_channelID">test</string>
-    <string name="notification_title">test</string>
+    <string name="notification_channelID">test1</string>
+    <string name="notification_title">test2</string>
+    <string name="notification_name">test3</string>
+    <string name="notification_">test4</string>
 
 
     <!-- app-content strings -->
@@ -41,6 +43,7 @@
     <string name="drawer_clearSkipped">Reset Skips</string>
     <string name="drawer_destinationList">Destination List</string>
     <string name="drawer_originList">Origin List</string>
+    <string name="drawer_getPlaylistIndex">Error accessing userdata</string>
 
     <!-- toasts -->
     <string name="toast_rhStated">error registering callbacks for state-updates</string>

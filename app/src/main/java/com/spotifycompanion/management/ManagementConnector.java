@@ -35,6 +35,7 @@ public class ManagementConnector extends Service {
     public RESTHandler gRESTHandler;
     private boolean lAuthorized = false;
     private List<Playlist> gPlayLists;
+    private int gNotificationID = 0;
 
     /**
      * constructor for management
@@ -224,7 +225,7 @@ public class ManagementConnector extends Service {
                 setContentIntent(lPendingIntent).
                 build();
 
-        startForeground(1, lNotification);
+        startForeground(gNotificationID++, lNotification);
         return START_REDELIVER_INTENT;
     }
 }
