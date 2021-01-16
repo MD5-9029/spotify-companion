@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         gManagementConnector.connectRemote();
         gManagementConnector.authorizeAccess();
+        gManagementConnector.setStrikes(2);
+        gManagementConnector.setProgressbarProgress(33);
     }
 
     @Override
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("UI", "Button clicked");
 
 
-            if (gManagementConnector.isgAuthorized()) {
+            if (gManagementConnector.islAuthorized()) {
                 //logout
                 gManagementConnector.disallowAccess(); //comment out if testing the examples
                 lBt.setText(R.string.drawer_logIn);
