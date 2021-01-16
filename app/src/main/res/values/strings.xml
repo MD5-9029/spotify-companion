@@ -38,7 +38,7 @@
     <string name="drawer_addList">Add to List</string>
     <string name="drawer_logIn">LogIn</string>
     <string name="drawer_logOut">LogOut</string>
-    <string name="drawer_clearSkipped">Clear Skipped</string>
+    <string name="drawer_clearSkipped">Reset Skips</string>
     <string name="drawer_destinationList">Destination List</string>
     <string name="drawer_originList">Origin List</string>
 
@@ -52,6 +52,10 @@
     <string name="toast_rhAdd">error adding track</string>
     <string name="toast_rhInstalled">YOU NEED SPOTIFY FOR THIS APP</string>
     <string name="toast_rhPremium">this app may only work properly with premium</string>
+    <string name="toast_restAuthTimeout">please reconnect your Spotify account</string>
+    <string name="toast_restAuthFail">Authentication failed. Please try again later.</string>
+    <string name="toast_restJsonFail">Unable to read Spotify response data.</string>
+    <string name="toast_restConnectionFail">Connection to Spotify timed out. Please try again later.</string>
     <string name="main_imageViewDescription">coverImage</string>
 
 </resources>

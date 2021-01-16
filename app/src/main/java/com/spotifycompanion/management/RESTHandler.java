@@ -3,10 +3,12 @@ package com.spotifycompanion.management;
 import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+import com.spotifycompanion.R;
 import com.spotifycompanion.models.Playlist;
 import com.spotifycompanion.models.Playlists;
 import com.spotifycompanion.models.SavedTracks;
@@ -32,31 +34,39 @@ public class RESTHandler {
 
     private final String APP_TOKEN = "spotify-companion-token";
     public final AuthorizationConfig authConfig = new AuthorizationConfig();
-    private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private final Activity contextActivity;
-    final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
-    public String mAccessToken;
-    public String mTokenType;       // SDK does not supply String type
-    public String mScope;           // SDK does not supply this
-    public int mExpiresIn;
-    public String mRefreshToken;    // SDK does not supply this
-    public String mAccessCode;
-    private Call mCall;
+    private final OkHttpClient pOkHttpClient = new OkHttpClient();
+    private final Activity gActivity;
+    final static Pattern pLastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
+    public String gAccessToken;
+    public String gTokenType;       // SDK does not supply String type
+    public String gScope;           // SDK does not supply this
+    public int gExpiresIn;
+    public String gRefreshToken;    // SDK does not supply this
+    public String gAccessCode;
+    private Call pCall;
 
 
     private Boolean isAuthorized = false;
 
 
     public RESTHandler(Activity pActivity) {
-        this.contextActivity = pActivity;
+        this.gActivity = pActivity;
     }
 
+    /**
+     * Cancels an active request
+     */
     public void cancelCall() {
-        if (mCall != null) {
-            mCall.cancel();
+        if (pCall != null) {
+            pCall.cancel();
         }
     }
 
+    /**
+     * Uses the Spotify SDK to build an authorization request object to be launched
+     * @param type AuthorizationResponse.Type token or code
+     * @return AuthorizationRequest object to be launched in new activity
+     */
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(this.authConfig.CLIENT_ID, type, this.authConfig.getRedirectUriString())
                 .setShowDialog(false)
@@ -65,18 +75,28 @@ public class RESTHandler {
                 .build();
     }
 
+    /**
+     * Request a new access token.
+     * Gets the AuthReq from the SDK and launches it in a new activity
+     * @param contextActivity the origin to return to
+     */
     public void requestToken(Activity contextActivity) {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
         AuthorizationClient.openLoginActivity(contextActivity, this.authConfig.AUTH_TOKEN_REQUEST_CODE, request);
     }
 
+    /**
+     * Request a new code token.
+     * Gets the AuthReq from the SDK and launches it in a new activity
+     * @param contextActivity the origin to return to
+     */
     public void requestCode(Activity contextActivity) {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.CODE);
         AuthorizationClient.openLoginActivity(contextActivity, this.authConfig.AUTH_CODE_REQUEST_CODE, request);
     }
 
     /**
-     * Not functional due to missing refresh token
+     * Not functional due to missing refresh token functionality (SDK related)
      * @return false
      */
     public Boolean requestRefreshToken() {
@@ -84,14 +104,19 @@ public class RESTHandler {
         JSONObject postData = new JSONObject();
         try {
             postData.put("grant_type", "refresh_token");
-            postData.put("refresh_token", mRefreshToken);
+            postData.put("refresh_token", gRefreshToken);
             JSONObject result = postData(path, postData.toString());
         } catch (JSONException e) {
             e.printStackTrace();
+            authFailToast();
         }
         return false;
     }
 
+    /**
+     * Clears access permissions
+     * @param contextActivity origin
+     */
     public void clearCredentials(Activity contextActivity) {
         AuthorizationClient.clearCookies(contextActivity);
     }
@@ -103,30 +128,34 @@ public class RESTHandler {
      */
     public JSONObject requestData(String route) {
         JSONObject data = null;
-        if (mAccessToken == null) {
-            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
+        if (gAccessToken == null) {
+            authTimeoutToast();
+            this.requestToken(gActivity); //better would be a general token_refresh beforehand
             return null;
         }
         final Request request = new Request.Builder()
                 .url(route)
-                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .addHeader("Authorization", "Bearer " + gAccessToken)
                 .build();
 
         cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+        pCall = pOkHttpClient.newCall(request);
         try {
-            Response response = mCall.execute();
+            Response response = pCall.execute();
             try {
                 data = new JSONObject(Objects.requireNonNull(response.body()).string());
             } catch (JSONException | IOException e) {
-                Log.e("response", "Cannot convert reply to JSON");
+                Log.e("spotify-companion", "Cannot convert reply to JSON");
+                jsonErrorToast();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            timeoutToast();
         }
         if (data.has("error")){
-            this.requestToken(contextActivity);
+            authTimeoutToast();
+            this.requestToken(gActivity);
             return null;
         }
         return data;
@@ -140,33 +169,37 @@ public class RESTHandler {
      */
     public JSONObject postData(String route, String jsonString) {
         JSONObject data = null;
-        if (mAccessToken == null) {
-            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
+        if (gAccessToken == null) {
+            authTimeoutToast();
+            this.requestToken(gActivity); //better would be a general token_refresh beforehand
             return null;
         }
         RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
         String test = body.toString();
         final Request request = new Request.Builder()
                 .url(route)
-                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .addHeader("Authorization", "Bearer " + gAccessToken)
                 .post(body)
                 .build();
 
         cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+        pCall = pOkHttpClient.newCall(request);
         try {
-            Response response = mCall.execute();
+            Response response = pCall.execute();
             try {
                 data = new JSONObject(Objects.requireNonNull(response.body()).string());
             } catch (JSONException | IOException e) {
                 Log.e("response", "Cannot convert reply to JSON");
+                jsonErrorToast();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            timeoutToast();
         }
         if (data.has("error")){
-            this.requestToken(contextActivity);
+            authTimeoutToast();
+            this.requestToken(gActivity);
             return null;
         }
         return data;
@@ -180,33 +213,37 @@ public class RESTHandler {
      */
     public JSONObject deleteData(String route, String jsonString) {
         JSONObject data = null;
-        if (mAccessToken == null) {
-            this.requestToken(contextActivity); //better would be a general token_refresh beforehand
+        if (gAccessToken == null) {
+            authTimeoutToast();
+            this.requestToken(gActivity); //better would be a general token_refresh beforehand
             return null;
         }
         RequestBody body = RequestBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"));
         String test = body.toString();
         final Request request = new Request.Builder()
                 .url(route)
-                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .addHeader("Authorization", "Bearer " + gAccessToken)
                 .delete(body)
                 .build();
 
         cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+        pCall = pOkHttpClient.newCall(request);
         try {
-            Response response = mCall.execute();
+            Response response = pCall.execute();
             try {
                 data = new JSONObject(Objects.requireNonNull(response.body()).string());
             } catch (JSONException | IOException e) {
                 Log.e("response", "Cannot convert reply to JSON");
+                jsonErrorToast();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            timeoutToast();
         }
         if (data.has("error")){
-            this.requestToken(contextActivity);
+            authTimeoutToast();
+            this.requestToken(gActivity);
             return null;
         }
         return data;
@@ -272,6 +309,7 @@ public class RESTHandler {
             return response != null;
         } catch (JSONException e) {
             e.printStackTrace();
+            jsonErrorToast();
         }
         return false;
     }
@@ -298,6 +336,7 @@ public class RESTHandler {
             return response != null;
         } catch (JSONException e) {
             e.printStackTrace();
+            jsonErrorToast();
         }
         return false;
     }
@@ -309,7 +348,7 @@ public class RESTHandler {
      * @return the integer value
      */
     private int getOffsetNumber(String input){
-        Matcher matcher = lastIntPattern.matcher(input);
+        Matcher matcher = pLastIntPattern.matcher(input);
         if (matcher.find()) {
             String numberStr = matcher.group(1);
             return Integer.parseInt(numberStr);
@@ -318,7 +357,7 @@ public class RESTHandler {
     }
 
     /**
-     * Return an SavedTracks object of all favorite tracks
+     * Return a SavedTracks object of all favorite tracks
      * @return SavedTracks object | null
      */
     public SavedTracks getSavedTracks(){
@@ -338,14 +377,45 @@ public class RESTHandler {
                 nextRoute = data.getString("next");
             } catch (JSONException e) {
                 e.printStackTrace();
+                jsonErrorToast();
             }
         }
         return savedTracks;
     }
+
+    /**
+     * Return a Playlist object of all favorite tracks
+     * @return Playlist object | null
+     */
     public Playlist getSavedTracksAsPlaylist(){
         Playlist playlist = null;
         SavedTracks savedTracks = getSavedTracks();
         playlist = new Playlist("favorites", savedTracks.getPlaylistTracks());
         return playlist;
+    }
+
+    /**
+     * Toast in case the access is blocked due to authentication fail
+     */
+    private void authFailToast(){
+        Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_restAuthFail), Toast.LENGTH_LONG).show();
+    }
+    /**
+     * Toast in case the access is blocked due to access token timeout
+     */
+    private void authTimeoutToast(){
+        Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_restAuthTimeout), Toast.LENGTH_LONG).show();
+    }
+    /**
+     * Toast in case the response from the server could not be read
+     */
+    private void jsonErrorToast(){
+        Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_restJsonFail), Toast.LENGTH_LONG).show();
+    }
+    /**
+     * Toast in case the API request crashes or times out
+     */
+    private void timeoutToast(){
+        Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_restConnectionFail), Toast.LENGTH_LONG).show();
     }
 }
