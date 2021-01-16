@@ -148,18 +148,22 @@ public class RemoteHandler {
 
     /**
      * play and pause toggle
+     * @return true if playing, false if paused
      */
-    public void togglePlayback() {
+    public Boolean togglePlayback() {
         try {
             if (gPlayer.isPaused) {
                 gSpotifyAppRemote.getPlayerApi().resume();
+                return true;
             } else {
                 gSpotifyAppRemote.getPlayerApi().pause();
+                return false;
             }
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhPlayback), Toast.LENGTH_LONG).show();
         }
         setTime();
+        return false;
     }
 
     /***
