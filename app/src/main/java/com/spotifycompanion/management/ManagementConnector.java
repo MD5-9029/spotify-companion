@@ -219,12 +219,11 @@ public class ManagementConnector extends Service {
         //return super.onStartCommand(intent, flags, startId);
 
         Intent lIntent = new Intent(this, MainActivity.class);
-        PendingIntent lPendingIntent = PendingIntent.getActivity(this, 0, lIntent, 0);
+        PendingIntent lPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         Notification lNotification = new NotificationCompat.Builder(this, getString(R.string.notification_channelID)).
                 setContentTitle(getString(R.string.notification_title)).
-                setContentText(Integer.toString(gRemote.getCurrentSkips())).
-                setSmallIcon(R.mipmap.ic_launcher).
+                setContentText("1"). //Integer.toString(gRemote.getCurrentSkips())
                 setSmallIcon(R.drawable.drawable_skip). //
                 setContentIntent(lPendingIntent).
                 build();
