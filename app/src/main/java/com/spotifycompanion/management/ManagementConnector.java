@@ -159,9 +159,9 @@ public class ManagementConnector extends Service {
      * @param strikes_int number of red strikes, the rest will be gray
      */
     public void setStrikes(int strikes_int) {
-        ImageView strike1 = gActivity.findViewById(R.id.strike1);
-        ImageView strike2 = gActivity.findViewById(R.id.strike2);
-        ImageView strike3 = gActivity.findViewById(R.id.strike3);
+        ImageView strike1 = gActivity.findViewById(R.id.iw_strike2);
+        ImageView strike2 = gActivity.findViewById(R.id.iw_strike1);
+        ImageView strike3 = gActivity.findViewById(R.id.iw_strike3);
         ImageView[] strikes = new ImageView[]{strike1, strike2, strike3};
         for (int i = 0; i < strikes.length; i++) {
             if (i < strikes_int) {

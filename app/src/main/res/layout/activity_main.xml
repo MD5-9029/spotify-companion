@@ -118,7 +118,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tw_trackArtist" />
 
         <ImageView
-            android:id="@+id/strike1"
+            android:id="@+id/iw_strike1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -129,23 +129,23 @@
             app:srcCompat="@drawable/ic_times_solid" />
 
         <ImageView
-            android:id="@+id/strike2"
+            android:id="@+id/iw_strike2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             app:tint="@color/red_200"
-            app:layout_constraintEnd_toStartOf="@+id/strike1"
-            app:layout_constraintTop_toTopOf="@+id/strike1"
+            app:layout_constraintEnd_toStartOf="@+id/iw_strike1"
+            app:layout_constraintTop_toTopOf="@+id/iw_strike1"
             app:srcCompat="@drawable/ic_times_solid" />
 
         <ImageView
-            android:id="@+id/strike3"
+            android:id="@+id/iw_strike3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             app:tint="@color/gray_500"
-            app:layout_constraintStart_toEndOf="@+id/strike1"
-            app:layout_constraintTop_toTopOf="@+id/strike1"
+            app:layout_constraintStart_toEndOf="@+id/iw_strike1"
+            app:layout_constraintTop_toTopOf="@+id/iw_strike1"
             app:srcCompat="@drawable/ic_times_solid" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
