@@ -213,10 +213,19 @@ public class MainActivity extends AppCompatActivity {
 
         gOrigin = findViewById(R.id.sp_srcList);
         gDestination = findViewById(R.id.sp_dstList);
-        gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
+        int lListCount = gManagementConnector.fillPlaylistsSelection(gOrigin, gDestination);
 
-        gOrigin.setSelection(gManagementConnector.getPlaylistPosition());
-        gDestination.setSelection(gPreferences.getInt(DESTINATION, 0));
+        //set origin
+        int lSelected = gManagementConnector.getPlaylistPosition();
+        if (lSelected >= 0 && lSelected < lListCount) {
+            gOrigin.setSelection(lSelected);
+        }
+
+        //set destination
+        lSelected = gPreferences.getInt(DESTINATION, 0);
+        if (lSelected >= 0 && lSelected < lListCount) {
+            gDestination.setSelection(lSelected);
+        }
     }
 
     public Playlist getOriginList() {
