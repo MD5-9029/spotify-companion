@@ -190,9 +190,10 @@ public class ManagementConnector extends Service {
      *
      * @param pOrigin      spinner the list of playlists should be displayed in
      * @param pDestination spinner the list of playlists should be displayed in
+     * @return the size of the arry containing all playlists
      */
-    public void fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
-        //can NOT add library/saved tracks du to no uri being provided (neither api can access this data)
+    public int fillPlaylistsSelection(Spinner pOrigin, Spinner pDestination) {
+        //can NOT add library/saved tracks due to no uri being provided (neither api can access this data)
         gPlayLists = gRemote.getPlaylists();
         gPlayLists.sort(new Comparator<Playlist>() {
             @Override
@@ -206,6 +207,8 @@ public class ManagementConnector extends Service {
 
         pOrigin.setAdapter(lAdapter);
         pDestination.setAdapter(lAdapter);
+
+        return gPlayLists.size();
     }
 
     @Nullable
