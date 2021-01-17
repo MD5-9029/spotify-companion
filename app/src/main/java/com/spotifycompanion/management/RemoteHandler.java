@@ -23,7 +23,7 @@ import java.util.List;
  * relays requests to spotify
  */
 public class RemoteHandler {
-    private static final int SKIPPED_LIMIT = 3;
+    private static final int SKIPPED_LIMIT = 4;
     //time tolerance for noticing a skip event
     private static final long TOLERANCE = 3000;
 
