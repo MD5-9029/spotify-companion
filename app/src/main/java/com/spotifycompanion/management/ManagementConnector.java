@@ -28,13 +28,13 @@ import java.util.List;
  * class containing and managing all components below view
  */
 public class ManagementConnector extends Service {
-    private MainActivity gActivity;
-    private DatabaseHandler gDatabaseHandler;
-    private RemoteHandler gRemote;
-    public RESTHandler gRESTHandler;
-    private boolean lAuthorized = false;
-    private List<Playlist> gPlayLists;
-    private int gNotificationID = 0;
+    private static MainActivity gActivity;
+    private static DatabaseHandler gDatabaseHandler;
+    private static RemoteHandler gRemote;
+    public static RESTHandler gRESTHandler;
+    private static boolean lAuthorized = false;
+    private static List<Playlist> gPlayLists;
+    private static int gNotificationID = 0;
 
     /**
      * constructor for management
@@ -46,6 +46,10 @@ public class ManagementConnector extends Service {
         gRESTHandler = new RESTHandler(pActivity);
         gDatabaseHandler = new DatabaseHandler(pActivity);
         gRemote = new RemoteHandler(gActivity, gDatabaseHandler, gRESTHandler);
+    }
+
+    public ManagementConnector() {
+
     }
 
     public void connectRemote() {
@@ -74,7 +78,7 @@ public class ManagementConnector extends Service {
         gRemote.setPlaylist(pUri);
     }
 
-    public int getPlaybackPosition(){
+    public int getPlaybackPosition() {
         return gRemote.getPlaybackPosition();
     }
 
@@ -160,6 +164,7 @@ public class ManagementConnector extends Service {
 
     /**
      * Sets the red UI strikes in the main window
+     *
      * @param strikes_int number of red strikes, the rest will be gray
      */
     public void setStrikes(int strikes_int) {
@@ -178,6 +183,7 @@ public class ManagementConnector extends Service {
 
     /**
      * Sets the progress bar progress
+     *
      * @param percentage integer between 0 and 100
      */
     public void setProgressbarProgress(int percentage) {
@@ -222,16 +228,15 @@ public class ManagementConnector extends Service {
         //return super.onStartCommand(intent, flags, startId);
 
         Intent lIntent = new Intent(this, MainActivity.class);
-        PendingIntent lPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent lPendingIntent = PendingIntent.getActivity(gActivity, 0, lIntent, 0);
 
         Notification lNotification = new NotificationCompat.Builder(this, getString(R.string.notification_channelID)).
                 setContentTitle(getString(R.string.notification_title)).
-                setContentText("1"). //Integer.toString(gRemote.getCurrentSkips())
-                setSmallIcon(R.drawable.drawable_skip). //
+                setSmallIcon(R.mipmap.ic_launcher).
                 setContentIntent(lPendingIntent).
                 build();
 
-        startForeground(gNotificationID++, lNotification);
+        startForeground(3, lNotification);
         return START_REDELIVER_INTENT;
     }
 }
