@@ -1,2 +1,2 @@
 # spotify-companion
-Projekt des Moduls "Mobile Applikationen"
+Project for mobile app development
