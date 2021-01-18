@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences gPreferences;
     SharedPreferences.Editor gEditor;
     Timer gTimer;
+    Intent gNotificationIntent;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager lManager = getSystemService(NotificationManager.class);
         lManager.createNotificationChannel(lChannel);
 
-        Intent lIntent = new Intent(this, ManagementConnector.class);
-        startService(lIntent);
+        gNotificationIntent = new Intent(this, ManagementConnector.class);
+        startService(gNotificationIntent);
     }
 
     @Override
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         gManagementConnector.disconnectRemote();
         gManagementConnector.disallowAccess();
+
+        stopService(gNotificationIntent);
     }
 
     @Override
