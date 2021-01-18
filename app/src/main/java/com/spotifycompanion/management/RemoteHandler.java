@@ -9,7 +9,6 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Repeat;
-import com.spotify.protocol.types.Track;
 import com.spotifycompanion.R;
 import com.spotifycompanion.activities.MainActivity;
 import com.spotifycompanion.models.Playlist;
@@ -237,10 +236,10 @@ public class RemoteHandler {
             gDatabase.addSkipped(lUri);
             if (gDatabase.getSkipped(lUri) >= SKIPPED_LIMIT) {
                 if (gActivity.getDeleteFromLikedValue()) {
-                    removeCurrentFromLibrary();
+                    removePreviousFromLibrary();
                 }
                 if (gActivity.getDeleteFromListValue()) {
-                    removeCurrentFromOriginList();
+                    removePreviousFromOriginList();
                 }
                 gDatabase.removeAllSkipped(lUri);
             }
@@ -297,10 +296,9 @@ public class RemoteHandler {
     /**
      * method for disliking/unliking/removing a track from  the users library
      */
-    public void removeCurrentFromLibrary() {
+    public void removePreviousFromLibrary() {
         try {
-            Track lTrack = gPlayer.track;
-            gSpotifyAppRemote.getUserApi().removeFromLibrary(lTrack.uri);
+            gSpotifyAppRemote.getUserApi().removeFromLibrary(gPreviousTrackUri);
         } catch (Exception e) {
             Toast.makeText(this.gActivity, gActivity.getString(R.string.toast_rhRemove), Toast.LENGTH_LONG).show();
         }
@@ -338,9 +336,9 @@ public class RemoteHandler {
     /**
      * remove skipped track from current playlist
      */
-    public void removeCurrentFromOriginList() {
+    public void removePreviousFromOriginList() {
         String[] lRemove = new String[1];
-        lRemove[0] = gPlayer.track.uri;
+        lRemove[0] = gPreviousTrackUri;
         gRestHandler.removeFromPlaylist(gActivity.getOriginList().id, lRemove);
     }
 
