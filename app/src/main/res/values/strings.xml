@@ -18,10 +18,9 @@
     <string name="bt_clearCredentials">Clear WebView Credentials</string>
 
     <!-- notification -->
-    <string name="notification_channelID">test1</string>
-    <string name="notification_title">test2</string>
-    <string name="notification_name">test3</string>
-    <string name="notification_">test4</string>
+    <string name="notification_channelID">companionChannelID</string>
+    <string name="notification_title">SpotifyCompanion is currently running</string>
+    <string name="notification_name">Companion</string>
 
 
     <!-- app-content strings -->
